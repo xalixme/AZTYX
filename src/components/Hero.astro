@@ -1,0 +1,138 @@
+---
+import { type Dict } from "../i18n";
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const lines = t.hero.title;
+---
+
+<section class="relative overflow-hidden" style="padding-top: var(--header-h)">
+  <!-- Fondo: retícula de filetes muy sutil + viñeta (decorativo) -->
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div
+      class="absolute inset-0 opacity-[0.5]"
+      style="background-image:
+        linear-gradient(to right, var(--line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+        background-size: clamp(3rem, 8vw, 6rem) clamp(3rem, 8vw, 6rem);
+        -webkit-mask-image: radial-gradient(120% 90% at 70% 0%, #000 30%, transparent 75%);
+        mask-image: radial-gradient(120% 90% at 70% 0%, #000 30%, transparent 75%);"
+    >
+    </div>
+    <!-- Detalle risográfico: bloque de acento desregistrado -->
+    <div class="absolute -right-16 top-[18%] h-44 w-44 rounded-full bg-ultra/10 blur-2xl"></div>
+  </div>
+
+  <div class="shell grid grid-cols-1 gap-10 pb-20 pt-12 sm:pt-16 lg:grid-cols-12 lg:gap-8 lg:pb-28 lg:pt-20">
+    <!-- Columna principal -->
+    <div class="lg:col-span-8">
+      <p class="kicker mb-6" data-reveal>{t.hero.kicker}</p>
+
+      <h1 class="font-extrabold leading-[0.92] tracking-tightest text-ink" style="font-size: clamp(2.7rem, 9vw, 7.25rem)">
+        {
+          lines.map((line, i) => (
+            <span
+              class="block"
+              class:list={[i === lines.length - 1 ? "text-ultra" : "text-ink"]}
+              data-reveal
+              style={`--reveal-delay:${120 + i * 110}ms`}
+            >
+              {line}
+            </span>
+          ))
+        }
+      </h1>
+
+      <!-- Guiño humano + agente (mono, con cursor) -->
+      <p class="mt-6 font-mono text-sm text-grey" data-reveal style="--reveal-delay:520ms">
+        <span class="text-ink">&gt;</span>
+        <span id="hero-typed" aria-label="humano + agente · a cuatro manos"></span><span
+          class="ml-0.5 inline-block h-[1.05em] w-[0.55ch] translate-y-[0.15em] bg-ultra animate-cursor-blink"
+          aria-hidden="true"></span>
+      </p>
+
+      <p class="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-ink-soft" data-reveal style="--reveal-delay:600ms">
+        {t.hero.lead}
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4" data-reveal style="--reveal-delay:680ms">
+        <a
+          href="#case"
+          class="group inline-flex items-center gap-3 bg-ink px-6 py-3.5 font-mono text-sm font-medium text-paper transition-colors duration-300 ease-swiss hover:bg-ultra"
+        >
+          {t.hero.ctaPrimary}
+          <span class="transition-transform duration-300 ease-swiss group-hover:translate-x-1" aria-hidden="true">→</span>
+        </a>
+        <a href="#contact" class="link-ul font-mono text-sm text-ink">{t.hero.ctaSecondary}</a>
+      </div>
+
+      <!-- Los tres ejes de la marca AZTYX (X·Y·Z) -->
+      <div class="mt-12 border-t border-line pt-6" data-reveal style="--reveal-delay:740ms">
+        <p class="kicker mb-4">{t.hero.axesLabel}</p>
+        <ul class="flex flex-wrap gap-x-10 gap-y-3">
+          {
+            t.hero.axes.map((a) => (
+              <li class="flex items-baseline gap-2.5">
+                <span class="font-mono text-2xl font-bold leading-none text-ultra">{a.k}</span>
+                <span class="text-base text-ink-soft">{a.v}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bloque de ficha (specs en mono) -->
+    <aside class="lg:col-span-4 lg:pt-2" data-reveal style="--reveal-delay:760ms">
+      <div class="relative border border-line bg-paper-2/40 p-5">
+        <!-- Marcas de registro en las esquinas (detalle Swiss) -->
+        <span class="absolute -left-px -top-px h-3 w-3 border-l-2 border-t-2 border-ink" aria-hidden="true"></span>
+        <span class="absolute -right-px -top-px h-3 w-3 border-r-2 border-t-2 border-ink" aria-hidden="true"></span>
+        <span class="absolute -bottom-px -left-px h-3 w-3 border-b-2 border-l-2 border-ink" aria-hidden="true"></span>
+        <span class="absolute -bottom-px -right-px h-3 w-3 border-b-2 border-r-2 border-ink" aria-hidden="true"></span>
+
+        <p class="mb-4 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-grey">
+          {t.hero.specsLabel} <span class="text-ultra">✱</span>
+        </p>
+        <dl class="space-y-0">
+          {
+            t.hero.specs.map((s, i) => (
+              <div
+                class:list={["flex items-baseline justify-between gap-4 py-2.5", i > 0 ? "border-t border-line" : ""]}
+              >
+                <dt class="font-mono text-[0.72rem] uppercase tracking-wider text-grey">{s.k}</dt>
+                <dd class="text-right font-mono text-sm text-ink">{s.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script>
+  // Teclea la firma "humano + agente" en el hero. Respeta reduce-motion.
+  function typeHeroSignature() {
+    const el = document.getElementById("hero-typed");
+    if (!el) return;
+    const full = "humano + agente · a cuatro manos";
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      el.textContent = full;
+      return;
+    }
+    el.textContent = "";
+    let i = 0;
+    const tick = () => {
+      if (i <= full.length) {
+        el.textContent = full.slice(0, i);
+        i++;
+        setTimeout(tick, 38 + Math.random() * 30);
+      }
+    };
+    setTimeout(tick, 700);
+  }
+  document.addEventListener("astro:page-load", typeHeroSignature);
+</script>

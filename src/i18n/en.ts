@@ -1,0 +1,285 @@
+// English dictionary — must mirror the shape of es.ts.
+export const en = {
+  meta: {
+    lang: "en",
+    title: "AZTYX — Sysadmin & Full-Stack · Real product, fast",
+    description:
+      "AZTYX: systems administration + full-stack development. I ship production software fast, pairing deep technical judgment with cutting-edge AI (Claude / agentic coding).",
+  },
+
+  nav: {
+    work: "How I work",
+    skills: "Skills",
+    case: "Case",
+    contact: "Contact",
+    toContact: "Let's talk",
+    skipToContent: "Skip to content",
+    langLabel: "Language",
+    menu: "Menu",
+  },
+
+  status: {
+    available: "Available for projects",
+  },
+
+  hero: {
+    kicker: "Sysadmin · Full-stack · Cutting-edge AI",
+    title: ["I ship production", "software", "at high speed."],
+    lead: "I pair systems administration and full-stack development with Claude-assisted workflows (agentic coding). Real, complete, secure product — without giving up performance or accessibility.",
+    ctaPrimary: "See the flagship case",
+    ctaSecondary: "Let's work together",
+    specsLabel: "Spec",
+    specs: [
+      { k: "Location", v: "Spain · remote" },
+      { k: "Languages", v: "ES · EN" },
+      { k: "Terrain", v: "Astro · Cloudflare · AI" },
+      { k: "Status", v: "Freelance / hire" },
+    ],
+    axesLabel: "Three axes · one vector",
+    axes: [
+      { k: "X", v: "Speed" },
+      { k: "Y", v: "Intelligence" },
+      { k: "Z", v: "Security" },
+    ],
+  },
+
+  work: {
+    num: "01",
+    title: "How I work",
+    lead: "AI doesn't replace judgment — it multiplies it. I decide the architecture and where not to compromise; the agent speeds up execution. The result is production software in a fraction of the time.",
+    humanTitle: "The human decides",
+    human: [
+      "Architecture, data model and system boundaries.",
+      "Where NOT to compromise: security, performance, accessibility.",
+      "Critical review of every line before shipping.",
+      "Diagnosing real production incidents.",
+    ],
+    agentTitle: "The agent executes",
+    agent: [
+      "Scaffolding, refactors and repetitive migrations.",
+      "Data extraction and automation.",
+      "UI drafts and variant exploration.",
+      "Tests, documentation and support tasks.",
+    ],
+    noCedeTitle: "Where I don't compromise",
+    noCede: [
+      { k: "Security", v: "100% prepared statements, whitelist-first validation, TOTP 2FA, revocable sessions, audit log." },
+      { k: "Performance", v: "SSR/static, zero third-party scripts, optimized images, caching. Always high Lighthouse." },
+      { k: "Accessibility", v: "ARIA, keyboard, AA contrast, prefers-reduced-motion. For everyone, not decoration." },
+    ],
+  },
+
+  skills: {
+    num: "02",
+    title: "What I do",
+    lead: "A real inventory, not aspirational. Every block is backed by production code.",
+    groups: [
+      {
+        k: "Frontend / UI-UX",
+        tags: [
+          "Astro 5 (SSR/hybrid)",
+          "Vanilla JS (no heavy framework)",
+          "Tailwind + design tokens",
+          "View Transitions · FLIP",
+          "IntersectionObserver",
+          "Procedural SVG · no stock",
+          "AA accessibility",
+          "i18n 9 languages · RTL",
+        ],
+      },
+      {
+        k: "Backend / Full-stack",
+        tags: [
+          "Cloudflare Workers/Pages",
+          "D1 (serverless SQLite)",
+          "R2 (object storage)",
+          "Native booking engine",
+          "Payments / deposit (Stripe · Redsys)",
+          "REST APIs · validation",
+          "JWT (HMAC) · sessions",
+          "TOTP 2FA (RFC 6238)",
+          "Turnstile · rate-limiting",
+          "Additive migrations",
+        ],
+      },
+      {
+        k: "DevOps / Sysadmin · Martech",
+        tags: [
+          "Cloudflare (Workers · DNS · Cron)",
+          "Cloudflare Zaraz (edge martech)",
+          "First-party cookieless analytics",
+          "Proxmox · Ceph (HA cluster)",
+          "Networking · Cat 5e/6 cabling",
+          "wrangler CLI · CI/CD on push",
+          "Linux · Windows Server",
+          "Bash / PowerShell",
+          "Production incidents",
+          "Performance optimization",
+        ],
+      },
+      {
+        k: "AI / Agentic coding",
+        tags: [
+          "Claude Code · agentic flows",
+          "Plan mode · assisted design",
+          "AI code review",
+          "Extraction/automation",
+          "Architecture judgment",
+          "AI as a multiplier",
+          "Effective prompt + context",
+          "Speed without losing control",
+        ],
+      },
+    ],
+  },
+
+  trayectoria: {
+    num: "03",
+    title: "Track record",
+    lead: "From systems administration to full-stack web development. A real technical foundation, measured in production.",
+    expLabel: "Experience",
+    experience: [
+      {
+        period: "Feb 2026 — Present",
+        role: "Jamstack Web Developer & Systems Administrator",
+        org: "Freelance",
+        bullets: [
+          "Full digital infrastructure deployment (Astro + Cloudflare) and production sites for hospitality clients.",
+          "Dynamic digital menu with automated multilingual translation via API (see featured case).",
+        ],
+      },
+      {
+        period: "Mar — May 2024",
+        role: "Systems Administrator / Support Technician",
+        org: "MZC (NGO)",
+        bullets: [
+          "Reduced downtime of business services and deployed network infrastructure (structured cabling Cat 5e/6).",
+          "Process standardization: SharePoint inventory and technical user guides.",
+        ],
+      },
+      {
+        period: "2019 — 2021",
+        role: "Hybrid IT Support Technician",
+        org: "Freelance",
+        bullets: [
+          "End-to-end hardware lifecycle management: validation, commissioning and maintenance.",
+          "Resolution of complex incidents in remote and on-site environments.",
+        ],
+      },
+    ],
+    eduLabel: "Education",
+    education: [
+      {
+        period: "2025 — 2026",
+        title: "Web & Multimedia Application Design (IMSV01 · 480h)",
+        org: "Grupo Fidsoft / SEPE",
+        note: "",
+      },
+      {
+        period: "2024",
+        title: "Higher Technician in Networked Systems Administration (ASIR)",
+        org: "C.D.P. Ramón y Cajal, Córdoba",
+        note: "Final project: physical high-availability cluster (3 nodes) with Proxmox and Ceph.",
+      },
+      {
+        period: "2021",
+        title: "Technological Baccalaureate",
+        org: "I.E.S. Averroes, Córdoba",
+        note: "",
+      },
+    ],
+    certLabel: "Certifications",
+    certs: ["Official IMSV01 Diploma · Web & Multimedia Development — Ministry of Labour / SEPE (2026)"],
+    langLabel: "Languages",
+    languages: [
+      { k: "Spanish", v: "Native" },
+      { k: "English", v: "Fluent · advanced technical" },
+    ],
+  },
+
+  case: {
+    num: "04",
+    kicker: "Case study · Live in production",
+    title: "Taberna La Manuela",
+    place: "Córdoba, next to the Mosque-Cathedral",
+    lead: "Digital menu platform + admin panel for a restaurant. Built on Astro 5 + Cloudflare (D1, R2, Pages). Proof of end-to-end capability: a real product — secure, international and fast.",
+    metricsTitle: "Capabilities",
+    metrics: [
+      { k: "9", v: "languages with automatic translation and RTL (Arabic)" },
+      { k: "3 levels", v: "allergen system (EU 1169/2011) with legal audit log" },
+      { k: "2FA", v: "admin login with TOTP (RFC 6238 · WebCrypto)" },
+      { k: "0", v: "third-party cookies — first-party analytics" },
+    ],
+    featuresTitle: "What it includes",
+    features: [
+      "SSR menu with dynamic categories and per-size multi-pricing.",
+      "Dietary filters (vegan/vegetarian/gluten-free) with two-way sync.",
+      "Separate Halal menu with its own experience.",
+      "Daily menu and visual dish reordering.",
+      "Admin panel with revocable sessions and progressive rate-limiting.",
+      "Handcrafted design system with SVG textures and micro-animations.",
+    ],
+    stackTitle: "Stack",
+    stack: ["Astro 5", "Cloudflare Pages", "D1", "R2", "Tailwind", "TypeScript"],
+    capability:
+      "+ Ready-to-integrate capability: native booking engine (agenda, reminders, no-show control) — cookieless and multilingual.",
+    linkLive: "View live",
+    linkRepo: "Code",
+  },
+
+  services: {
+    num: "05",
+    title: "How I can help",
+    lead: "I don't build sites for one sector: I build the operating system of a local business. Reusable modules I assemble per case, at near-zero running cost.",
+    items: [
+      { k: "Custom platform", v: "Public site + self-managed admin on Astro + Cloudflare (D1, R2). Multilingual, fast and secure, for any sector." },
+      { k: "Booking & appointments", v: "Native booking engine: agenda, no-show reminders, waitlist and deposits. Tables, appointments, rooms, hotel rooms or courts." },
+      { k: "Privacy + Martech", v: "First-party cookieless analytics + Cloudflare Zaraz: pixels, GA4 and Conversions API from the edge. Marketing that measures without slowing down or intruding." },
+      { k: "AI acceleration", v: "I bring agentic workflows (Claude) into your team to multiply speed without losing technical control." },
+    ],
+    sectorsLabel: "Sectors",
+    sectors: [
+      "Hospitality",
+      "Local retail",
+      "Health / clinics",
+      "Professional services",
+      "Beauty / wellness",
+      "Tourism / lodging",
+      "Real estate / automotive",
+      "Education / training",
+      "Events / leisure",
+    ],
+  },
+
+  contact: {
+    num: "06",
+    title: "Let's work together",
+    lead: "Tell me about the project. I reply to every message.",
+    form: {
+      name: "Name",
+      namePh: "Your name",
+      email: "Email",
+      emailPh: "you@email.com",
+      message: "Message",
+      messagePh: "What's on your mind…",
+      send: "Send message",
+      sending: "Sending…",
+      success: "Message sent. I'll get back to you soon.",
+      error: "Couldn't send. Try again or write me directly.",
+      invalid: "Check the highlighted fields.",
+    },
+    directTitle: "Direct",
+    email: "{{EMAIL}}",
+    linkedinLabel: "LinkedIn",
+    linkedin: "{{LINKEDIN}}",
+    githubLabel: "GitHub",
+    github: "github.com/xalixme",
+  },
+
+  footer: {
+    tagline: "Human + AI, four hands.",
+    builtWith: "Built with Astro + Cloudflare. No template.",
+    rights: "All rights reserved.",
+    backToTop: "Back to top",
+  },
+} as const;

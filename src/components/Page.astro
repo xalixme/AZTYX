@@ -1,0 +1,32 @@
+---
+// Composición de la página (compartida por ES y EN).
+import Header from "./Header.astro";
+import Hero from "./Hero.astro";
+import ComoTrabajo from "./ComoTrabajo.astro";
+import Skills from "./Skills.astro";
+import Trayectoria from "./Trayectoria.astro";
+import CasoManuela from "./CasoManuela.astro";
+import Servicios from "./Servicios.astro";
+import Contacto from "./Contacto.astro";
+import Footer from "./Footer.astro";
+import { type Lang, type Dict } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  t: Dict;
+}
+const { lang, t } = Astro.props;
+---
+
+<span id="top" aria-hidden="true"></span>
+<Header lang={lang} t={t} />
+<main id="main">
+  <Hero t={t} />
+  <ComoTrabajo t={t} />
+  <Skills t={t} />
+  <Trayectoria t={t} />
+  <CasoManuela t={t} />
+  <Servicios t={t} />
+  <Contacto t={t} />
+</main>
+<Footer lang={lang} t={t} />

@@ -1,0 +1,67 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { type Dict } from "../i18n";
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const w = t.work;
+---
+
+<section id="work" class="invert scroll-mt-24 py-20 sm:py-28">
+  <div class="shell">
+    <SectionHead num={w.num} title={w.title} lead={w.lead} />
+
+    <!-- Dos autores: el humano decide / el agente ejecuta (motivo "diff") -->
+    <div class="mt-14 grid grid-cols-1 gap-px overflow-hidden border border-line bg-line md:grid-cols-2">
+      <!-- Humano -->
+      <div class="bg-paper p-7 sm:p-9" data-reveal>
+        <p class="mb-6 flex items-center gap-3 font-mono text-[0.72rem] uppercase tracking-[0.18em] text-grey">
+          <span class="inline-block h-2 w-2 bg-ink"></span>{w.humanTitle}
+        </p>
+        <ul class="space-y-4">
+          {
+            w.human.map((item) => (
+              <li class="flex gap-3 text-[0.98rem] leading-relaxed text-ink">
+                <span class="select-none font-mono text-ink/50" aria-hidden="true">+</span>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <!-- Agente -->
+      <div class="bg-paper p-7 sm:p-9" data-reveal style="--reveal-delay:120ms">
+        <p class="mb-6 flex items-center gap-3 font-mono text-[0.72rem] uppercase tracking-[0.18em] text-ultra">
+          <span class="inline-block h-2 w-2 bg-ultra"></span>{w.agentTitle}
+        </p>
+        <ul class="space-y-4">
+          {
+            w.agent.map((item) => (
+              <li class="flex gap-3 text-[0.98rem] leading-relaxed text-ink-soft">
+                <span class="select-none font-mono text-ultra" aria-hidden="true">+</span>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Donde no cedo -->
+    <div class="mt-16">
+      <p class="kicker mb-6" data-reveal>{w.noCedeTitle}</p>
+      <div class="grid grid-cols-1 gap-px overflow-hidden border border-line bg-line sm:grid-cols-3">
+        {
+          w.noCede.map((c, i) => (
+            <div class="bg-paper p-6 sm:p-7" data-reveal style={`--reveal-delay:${i * 100}ms`}>
+              <p class="mb-3 font-mono text-xs text-grey">{String(i + 1).padStart(2, "0")}</p>
+              <h3 class="mb-2 text-xl font-bold tracking-tight text-ink">{c.k}</h3>
+              <p class="text-sm leading-relaxed text-ink-soft">{c.v}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,58 @@
+/* ============================================================
+   TOKENS DE DISEÑO — «Spec Sheet» (estilo tipográfico Swiss)
+   Un único acento eléctrico (ultramar) sobre papel hueso + tinta.
+   ============================================================ */
+:root {
+  /* — Color — */
+  --paper: #f4f1ea; /* fondo: hueso cálido */
+  --paper-2: #ece7db; /* superficie alternativa (sunken) */
+  --ink: #14130f; /* tinta: negro cálido (lo humano) */
+  --ink-soft: #2c2a24;
+  --ultra: #1a39ff; /* ultramar eléctrico (acento / lo del agente) */
+  --ultra-press: #1430d0;
+  --grey: #6b6a63; /* gris cálido (meta / atenuado) */
+  --line: rgba(20, 19, 15, 0.16); /* filete */
+  --line-strong: rgba(20, 19, 15, 0.32);
+
+  /* — Tokens semánticos (se invierten en .invert) — */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-muted: var(--grey);
+  --accent: var(--ultra);
+  --rule: var(--line);
+
+  /* — Tipografía — */
+  --font-sans: "Archivo Variable", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* — Retícula y ritmo — */
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --maxw: 84rem;
+  --header-h: 4.25rem;
+
+  /* — Motion — */
+  --ease-swiss: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.6s;
+}
+
+/* Bloque invertido: intercambia TODA la paleta vía variables, de modo que las
+   utilidades literales (text-ink, bg-paper, text-ultra…) "se dan la vuelta" solas.
+   Se aplica con la clase .invert en cualquier sección. */
+.invert {
+  --paper: #14130f; /* la "superficie" pasa a ser tinta */
+  --paper-2: #201e18;
+  --ink: #f4f1ea; /* el "texto" pasa a ser papel */
+  --ink-soft: #d9d6cc;
+  --grey: #9c9a8f; /* gris legible sobre fondo oscuro */
+  --ultra: #5b78ff; /* ultramar más claro para contraste sobre tinta */
+  --ultra-press: #7f95ff;
+  --line: rgba(244, 241, 234, 0.16);
+  --line-strong: rgba(244, 241, 234, 0.34);
+
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-muted: var(--grey);
+  --rule: var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}

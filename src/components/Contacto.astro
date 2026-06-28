@@ -1,0 +1,159 @@
+---
+import { type Dict } from "../i18n";
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const c = t.contact;
+
+// Site key pública de Turnstile. Test key (siempre pasa) por defecto; en
+// producción definir PUBLIC_TURNSTILE_SITE_KEY en el entorno.
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
+
+const direct = [
+  { label: "Email", value: c.email, href: `mailto:${c.email}` },
+  { label: c.linkedinLabel, value: c.linkedin, href: c.linkedin },
+  { label: c.githubLabel, value: c.github, href: `https://${c.github}` },
+];
+---
+
+<section id="contact" class="invert scroll-mt-24 py-20 sm:py-28">
+  <div class="shell grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
+    <!-- Columna izquierda: título + enlaces directos -->
+    <div class="lg:col-span-5">
+      <hr class="rule mb-8 origin-left" data-rule />
+      <div class="flex items-start gap-4">
+        <span class="section-num text-sm text-ultra" data-reveal>{c.num}</span>
+        <h2 class="font-extrabold leading-[0.95] tracking-tighter text-ink" style="font-size: clamp(2rem, 5.5vw, 3.75rem)" data-reveal>
+          {c.title}
+        </h2>
+      </div>
+      <p class="mt-5 max-w-md text-pretty text-base leading-relaxed text-ink-soft" data-reveal style="--reveal-delay:120ms">
+        {c.lead}
+      </p>
+
+      <p class="kicker mb-4 mt-10" data-reveal>{c.directTitle}</p>
+      <ul class="space-y-0" data-reveal>
+        {
+          direct.map((d, i) => (
+            <li class:list={["flex items-baseline justify-between gap-4 py-3", i > 0 ? "border-t border-line" : ""]}>
+              <span class="font-mono text-[0.72rem] uppercase tracking-wider text-grey">{d.label}</span>
+              <a href={d.href} target={d.href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" class="link-ul font-mono text-sm text-ink">
+                {d.value}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Columna derecha: formulario -->
+    <div class="lg:col-span-7 lg:pt-16">
+      <form id="contact-form" class="grid grid-cols-1 gap-6 sm:grid-cols-2" novalidate>
+        <div class="sm:col-span-1">
+          <label for="cf-name" class="mb-2 block font-mono text-[0.72rem] uppercase tracking-wider text-grey">{c.form.name}</label>
+          <input id="cf-name" name="name" type="text" required maxlength="80" autocomplete="name" placeholder={c.form.namePh}
+            class="w-full border-0 border-b border-line bg-transparent pb-2 text-ink placeholder:text-grey/60 focus:border-ultra focus:outline-none focus:ring-0" />
+        </div>
+        <div class="sm:col-span-1">
+          <label for="cf-email" class="mb-2 block font-mono text-[0.72rem] uppercase tracking-wider text-grey">{c.form.email}</label>
+          <input id="cf-email" name="email" type="email" required maxlength="120" autocomplete="email" placeholder={c.form.emailPh}
+            class="w-full border-0 border-b border-line bg-transparent pb-2 text-ink placeholder:text-grey/60 focus:border-ultra focus:outline-none focus:ring-0" />
+        </div>
+        <div class="sm:col-span-2">
+          <label for="cf-message" class="mb-2 block font-mono text-[0.72rem] uppercase tracking-wider text-grey">{c.form.message}</label>
+          <textarea id="cf-message" name="message" required maxlength="2000" rows="4" placeholder={c.form.messagePh}
+            class="w-full resize-y border-0 border-b border-line bg-transparent pb-2 text-ink placeholder:text-grey/60 focus:border-ultra focus:outline-none focus:ring-0"></textarea>
+        </div>
+
+        <!-- Honeypot anti-bots (oculto a humanos) -->
+        <div class="hidden" aria-hidden="true">
+          <label>No rellenar<input name="company" type="text" tabindex="-1" autocomplete="off" /></label>
+        </div>
+
+        <!-- Widget Turnstile (único script externo, justificado por seguridad).
+             Solo en producción: en dev el servidor no exige token sin secreto. -->
+        {
+          import.meta.env.PROD && (
+            <div class="sm:col-span-2">
+              <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="auto" />
+            </div>
+          )
+        }
+
+        <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
+          <button id="cf-submit" type="submit"
+            class="group inline-flex items-center gap-3 bg-ink px-7 py-3.5 font-mono text-sm text-paper transition-colors duration-300 ease-swiss hover:bg-ultra hover:text-white disabled:cursor-not-allowed disabled:opacity-50">
+            <span data-label-default>{c.form.send}</span>
+            <span class="transition-transform duration-300 ease-swiss group-hover:translate-x-1" aria-hidden="true">→</span>
+          </button>
+          <p id="cf-status" class="font-mono text-sm" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Cloudflare Turnstile (carga diferida, solo en producción) -->
+{import.meta.env.PROD && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />}
+
+<script
+  define:vars={{
+    msg: { sending: c.form.sending, success: c.form.success, error: c.form.error, invalid: c.form.invalid, send: c.form.send },
+  }}
+>
+  function setupContactForm() {
+    const form = document.getElementById("contact-form");
+    if (!form || form.dataset.bound === "1") return;
+    form.dataset.bound = "1";
+
+    const statusEl = document.getElementById("cf-status");
+    const btn = document.getElementById("cf-submit");
+    const labelEl = btn?.querySelector("[data-label-default]");
+
+    const setStatus = (text, ok) => {
+      if (!statusEl) return;
+      statusEl.textContent = text;
+      statusEl.style.color = ok ? "var(--ultra)" : "#ff6b6b";
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // Validación cliente mínima (el servidor revalida whitelist-first).
+      if (!data.name?.trim() || !data.message?.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(data.email || ""))) {
+        setStatus(msg.invalid, false);
+        return;
+      }
+
+      const token = (form.querySelector('[name="cf-turnstile-response"]') || {}).value || "";
+      data["cf-turnstile-response"] = token;
+
+      btn.disabled = true;
+      if (labelEl) labelEl.textContent = msg.sending;
+      setStatus("", true);
+
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (res.ok) {
+          form.reset();
+          if (window.turnstile) window.turnstile.reset();
+          setStatus(msg.success, true);
+        } else {
+          setStatus(msg.error, false);
+        }
+      } catch {
+        setStatus(msg.error, false);
+      } finally {
+        btn.disabled = false;
+        if (labelEl) labelEl.textContent = msg.send;
+      }
+    });
+  }
+  document.addEventListener("astro:page-load", setupContactForm);
+</script>

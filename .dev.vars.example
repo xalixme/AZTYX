@@ -1,0 +1,13 @@
+# Copia este fichero a `.dev.vars` para desarrollo local con wrangler/Cloudflare.
+# (.dev.vars está en .gitignore y NO se sube al repo.)
+
+# Cloudflare Turnstile — clave SECRETA (la pública va en wrangler.toml / PUBLIC_*)
+# Clave de PRUEBAS que siempre pasa:
+TURNSTILE_SECRET="1x0000000000000000000000000000000AA"
+
+# Notificación por email (Resend). Sin estas, el mensaje se registra por consola.
+RESEND_API_KEY=""
+CONTACT_TO="tu@email.com"
+
+# Site key pública (también puede ir en .env como variable de build de Astro):
+# PUBLIC_TURNSTILE_SITE_KEY="1x00000000000000000000AA"

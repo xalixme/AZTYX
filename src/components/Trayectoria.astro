@@ -1,0 +1,98 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { type Dict } from "../i18n";
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const tr = t.trayectoria;
+---
+
+<section id="trayectoria" class="scroll-mt-24 py-20 sm:py-28">
+  <div class="shell">
+    <SectionHead num={tr.num} title={tr.title} lead={tr.lead} />
+
+    <!-- Experiencia -->
+    <div class="mt-14">
+      <p class="kicker mb-2" data-reveal>{tr.expLabel}</p>
+      <div>
+        {
+          tr.experience.map((e, i) => (
+            <div
+              class="grid grid-cols-1 gap-x-8 gap-y-2 border-t border-line py-7 md:grid-cols-12"
+              data-reveal
+              style={`--reveal-delay:${i * 80}ms`}
+            >
+              <p class="font-mono text-sm text-grey md:col-span-3">{e.period}</p>
+              <div class="md:col-span-9">
+                <h3 class="text-xl font-bold leading-tight tracking-tight text-ink">{e.role}</h3>
+                <p class="mt-1 font-mono text-[0.8rem] text-ultra">{e.org}</p>
+                <ul class="mt-4 space-y-2.5">
+                  {e.bullets.map((b) => (
+                    <li class="flex gap-3 text-[0.95rem] leading-relaxed text-ink-soft">
+                      <span class="select-none font-mono text-ultra" aria-hidden="true">+</span>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Formación -->
+    <div class="mt-14">
+      <p class="kicker mb-2" data-reveal>{tr.eduLabel}</p>
+      <div>
+        {
+          tr.education.map((e, i) => (
+            <div
+              class="grid grid-cols-1 gap-x-8 gap-y-1 border-t border-line py-6 md:grid-cols-12"
+              data-reveal
+              style={`--reveal-delay:${i * 80}ms`}
+            >
+              <p class="font-mono text-sm text-grey md:col-span-3">{e.period}</p>
+              <div class="md:col-span-9">
+                <h3 class="text-lg font-bold leading-snug tracking-tight text-ink">{e.title}</h3>
+                <p class="mt-1 font-mono text-[0.8rem] text-grey">{e.org}</p>
+                {e.note && <p class="mt-2 text-[0.9rem] leading-relaxed text-ink-soft">↳ {e.note}</p>}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Certificaciones + Idiomas -->
+    <div class="mt-14 grid grid-cols-1 gap-px overflow-hidden border border-line bg-line md:grid-cols-2">
+      <div class="bg-paper p-7 sm:p-8" data-reveal>
+        <p class="kicker mb-5">{tr.certLabel}</p>
+        <ul class="space-y-3">
+          {
+            tr.certs.map((c) => (
+              <li class="flex gap-3 text-[0.95rem] leading-relaxed text-ink">
+                <span class="select-none font-mono text-ultra" aria-hidden="true">✱</span>
+                <span>{c}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="bg-paper p-7 sm:p-8" data-reveal style="--reveal-delay:100ms">
+        <p class="kicker mb-5">{tr.langLabel}</p>
+        <dl>
+          {
+            tr.languages.map((l, i) => (
+              <div class:list={["flex items-baseline justify-between gap-4 py-2.5", i > 0 ? "border-t border-line" : ""]}>
+                <dt class="font-mono text-[0.78rem] uppercase tracking-wider text-grey">{l.k}</dt>
+                <dd class="text-right text-sm text-ink">{l.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>

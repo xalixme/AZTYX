@@ -1,0 +1,86 @@
+---
+import "../styles/global.css";
+// Fuentes auto-alojadas (cero terceros, mejor Lighthouse).
+import "@fontsource-variable/archivo";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
+
+import { ClientRouter } from "astro:transitions";
+import { altLangPath, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+}
+const { lang, title, description } = Astro.props;
+
+const url = Astro.url;
+const canonical = new URL(url.pathname, Astro.site ?? url.origin).toString();
+const altEs = new URL(altLangPath(url.pathname, "es"), Astro.site ?? url.origin).toString();
+const altEn = new URL(altLangPath(url.pathname, "en"), Astro.site ?? url.origin).toString();
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f4f1ea" />
+    <meta name="color-scheme" content="light" />
+
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es" href={altEs} />
+    <link rel="alternate" hreflang="en" href={altEn} />
+    <link rel="alternate" hreflang="x-default" href={altEs} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === "es" ? "es_ES" : "en_US"} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <ClientRouter />
+  </head>
+
+  <body>
+    <slot />
+
+    <script>
+      // Reveals orquestados por scroll. Si el usuario pide menos movimiento,
+      // se muestran de inmediato (el CSS ya lo respeta; aquí evitamos el observer).
+      function setupReveals() {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const nodes = document.querySelectorAll<HTMLElement>("[data-reveal], [data-rule]");
+        if (reduce || !("IntersectionObserver" in window)) {
+          nodes.forEach((n) => n.classList.add("is-in"));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries, obs) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-in");
+                obs.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -10% 0px", threshold: 0.12 }
+        );
+        nodes.forEach((n) => io.observe(n));
+      }
+
+      // Se ejecuta en cada carga de página (incluidas las View Transitions).
+      document.addEventListener("astro:page-load", setupReveals);
+    </script>
+  </body>
+</html>

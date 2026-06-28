@@ -1,0 +1,147 @@
+---
+import { type Dict } from "../i18n";
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const c = t.case;
+
+// Placeholders a sustituir por el usuario.
+const MANUELA_URL = "{{MANUELA_URL}}";
+const MANUELA_REPO = "{{MANUELA_REPO}}";
+---
+
+<section id="case" class="scroll-mt-24 py-20 sm:py-28">
+  <div class="shell">
+    <hr class="rule mb-8 origin-left" data-rule />
+
+    <!-- Encabezado del caso -->
+    <div class="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-12">
+      <div class="md:col-span-7">
+        <div class="flex items-start gap-4">
+          <span class="section-num text-sm text-ultra" data-reveal>{c.num}</span>
+          <div>
+            <p class="kicker mb-3" data-reveal>{c.kicker}</p>
+            <h2 class="font-extrabold leading-[0.95] tracking-tighter text-ink" style="font-size: clamp(2.2rem, 6vw, 4.25rem)" data-reveal>
+              {c.title}
+            </h2>
+            <p class="mt-2 font-mono text-sm text-grey" data-reveal>↳ {c.place}</p>
+          </div>
+        </div>
+      </div>
+      <p class="self-end text-pretty text-base leading-relaxed text-ink-soft md:col-span-5" data-reveal style="--reveal-delay:120ms">
+        {c.lead}
+      </p>
+    </div>
+
+    <!-- Métricas grandes -->
+    <div class="mt-14 grid grid-cols-2 gap-px overflow-hidden border border-line bg-line lg:grid-cols-4">
+      {
+        c.metrics.map((m, i) => (
+          <div class="bg-paper p-6" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <p class="font-mono font-semibold leading-none tracking-tight text-ultra" style="font-size: clamp(2rem, 5vw, 3.25rem)">
+              {m.k}
+            </p>
+            <p class="mt-3 text-sm leading-snug text-ink-soft">{m.v}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Cuerpo: features + stack | wireframe -->
+    <div class="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-7">
+        <p class="kicker mb-5" data-reveal>{c.featuresTitle}</p>
+        <ul class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-8">
+          {
+            c.features.map((f, i) => (
+              <li class="flex gap-3 text-[0.95rem] leading-relaxed text-ink" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+                <span class="select-none font-mono text-ultra" aria-hidden="true">+</span>
+                <span>{f}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <p class="kicker mb-4 mt-10" data-reveal>{c.stackTitle}</p>
+        <ul class="flex flex-wrap gap-2" data-reveal>
+          {
+            c.stack.map((s) => (
+              <li class="border border-line px-3 py-1.5 font-mono text-[0.78rem] text-ink-soft">{s}</li>
+            ))
+          }
+        </ul>
+
+        <p class="mt-8 border-l-2 border-ultra pl-4 font-mono text-[0.85rem] leading-relaxed text-ink-soft" data-reveal>
+          {c.capability}
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3" data-reveal>
+          <a href={MANUELA_URL} target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2.5 bg-ink px-5 py-3 font-mono text-sm text-paper transition-colors duration-300 ease-swiss hover:bg-ultra">
+            {c.linkLive}
+            <span class="transition-transform duration-300 ease-swiss group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true">↗</span>
+          </a>
+          <a href={MANUELA_REPO} target="_blank" rel="noopener noreferrer" class="link-ul font-mono text-sm text-ink">{c.linkRepo}</a>
+        </div>
+      </div>
+
+      <!-- Wireframe SVG estilizado de la carta (procedural, sin captura) -->
+      <div class="lg:col-span-5" data-reveal style="--reveal-delay:160ms">
+        <figure class="relative">
+          <svg viewBox="0 0 360 452" class="w-full" role="img" aria-label="Boceto de la carta digital de Taberna La Manuela" fill="none" font-family="'IBM Plex Mono', ui-monospace, monospace">
+            <rect x="1" y="1" width="358" height="450" rx="6" stroke="#221f18" stroke-opacity="0.32" />
+            <!-- Chrome de ventana -->
+            <line x1="1" y1="34" x2="359" y2="34" stroke="#221f18" stroke-opacity="0.16" />
+            <circle cx="18" cy="17.5" r="3" fill="#221f18" fill-opacity="0.32" />
+            <circle cx="30" cy="17.5" r="3" fill="#221f18" fill-opacity="0.32" />
+            <circle cx="42" cy="17.5" r="3" fill="#221f18" fill-opacity="0.32" />
+            <rect x="70" y="10.5" width="220" height="14" rx="7" fill="#ece7db" />
+            <text x="80" y="20.5" font-size="8" fill="#6b6a63">tabernalamanuela.es</text>
+
+            <!-- Selector de idioma (9 cuadros) -->
+            <g>
+              {Array.from({ length: 9 }).map((_, i) => (
+                <rect x={20 + i * 18} y="50" width="13" height="9" rx="1.5" fill={i === 0 ? "#1a39ff" : "#ece7db"} stroke="#221f18" stroke-opacity="0.16" />
+              ))}
+            </g>
+
+            <!-- Título de carta -->
+            <rect x="20" y="74" width="150" height="14" rx="2" fill="#14130f" opacity="0.85" />
+            <rect x="20" y="94" width="90" height="7" rx="2" fill="#6b6a63" opacity="0.5" />
+
+            <!-- Pestañas de categoría -->
+            <g font-size="8">
+              <rect x="20" y="116" width="60" height="18" rx="9" fill="#14130f" />
+              <text x="32" y="128" fill="#f4f1ea">Tapas</text>
+              <rect x="88" y="116" width="66" height="18" rx="9" stroke="#221f18" stroke-opacity="0.32" />
+              <text x="99" y="128" fill="#6b6a63">Guisos</text>
+              <rect x="162" y="116" width="58" height="18" rx="9" stroke="#1a39ff" />
+              <text x="172" y="128" fill="#1a39ff">Halal</text>
+            </g>
+
+            <!-- Filas de platos -->
+            {Array.from({ length: 4 }).map((_, i) => {
+              const y = 152 + i * 66;
+              return (
+                <g>
+                  <line x1="20" y1={y} x2="340" y2={y} stroke="#221f18" stroke-opacity="0.16" />
+                  <rect x="20" y={y + 14} width={130 - i * 12} height="9" rx="2" fill="#14130f" opacity="0.8" />
+                  <rect x="20" y={y + 29} width={180 - i * 8} height="6" rx="2" fill="#6b6a63" opacity="0.45" />
+                  <rect x="20" y={y + 41} width={150 - i * 14} height="6" rx="2" fill="#6b6a63" opacity="0.45" />
+                  {/* Precio */}
+                  <rect x="296" y={y + 13} width="44" height="16" rx="3" fill="#1a39ff" opacity="0.12" stroke="#1a39ff" />
+                  <text x="318" y={y + 24.5} font-size="8.5" fill="#1a39ff" text-anchor="middle">8,50</text>
+                  {/* Badges de alérgenos (3 niveles) */}
+                  <circle cx="300" cy={y + 41} r="4" fill="#14130f" opacity="0.8" />
+                  <circle cx="314" cy={y + 41} r="4" stroke="#14130f" stroke-opacity="0.5" />
+                  <circle cx="328" cy={y + 41} r="4" stroke="#221f18" stroke-opacity="0.32" stroke-dasharray="2 2" />
+                </g>
+              );
+            })}
+          </svg>
+          <figcaption class="mt-3 text-center font-mono text-[0.7rem] text-grey">carta.astro · SSR · D1</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>

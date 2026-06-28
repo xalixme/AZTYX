@@ -1,0 +1,72 @@
+---
+import Mark from "./Mark.astro";
+import { altLangPath, type Lang, type Dict } from "../i18n";
+interface Props {
+  lang: Lang;
+  t: Dict;
+}
+const { lang, t } = Astro.props;
+const year = new Date().getFullYear();
+const path = Astro.url.pathname;
+
+const links = [
+  { label: t.contact.githubLabel, href: `https://${t.contact.github}` },
+  { label: t.contact.linkedinLabel, href: t.contact.linkedin },
+  { label: "Email", href: `mailto:${t.contact.email}` },
+];
+---
+
+<footer class="invert border-t border-line pb-10 pt-16">
+  <div class="shell">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+      <div class="md:col-span-6">
+        <a href={lang === "es" ? "/" : "/en/"} class="inline-flex items-center gap-2.5" aria-label="AZTYX">
+          <Mark size={28} class="text-ink" />
+          <span class="flex items-baseline gap-1.5">
+            <span class="text-lg font-extrabold tracking-tight text-ink">AZTYX</span>
+            <span class="font-mono text-[0.72rem] text-grey">/xalixme</span>
+          </span>
+        </a>
+        <p class="mt-5 max-w-sm text-lg font-medium leading-snug text-ink">{t.footer.tagline}</p>
+        <p class="mt-2 max-w-sm font-mono text-[0.78rem] leading-relaxed text-grey">{t.footer.builtWith}</p>
+      </div>
+
+      <nav class="md:col-span-4 md:col-start-9" aria-label="Footer">
+        <ul class="space-y-3">
+          {
+            links.map((l) => (
+              <li>
+                <a href={l.href} target={l.href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" class="link-ul font-mono text-sm text-ink">
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a href="#top" class="font-mono text-sm text-grey hover:text-ink">{t.footer.backToTop} ↑</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <hr class="rule my-9" />
+
+    <div class="flex flex-col items-start justify-between gap-3 font-mono text-[0.72rem] text-grey sm:flex-row sm:items-center">
+      <p>© {year} AZTYX · {t.footer.rights}</p>
+      <div class="flex items-center gap-1">
+        <a href={altLangPath(path, "es")} class:list={[lang === "es" ? "text-ink" : "hover:text-ink"]}>ES</a>
+        <span aria-hidden="true">/</span>
+        <a href={altLangPath(path, "en")} class:list={[lang === "en" ? "text-ink" : "hover:text-ink"]}>EN</a>
+      </div>
+    </div>
+
+    <!-- Wordmark de cierre: AZTYX con Z·Y·X (los ejes) en ultramar -->
+    <div class="mt-12 select-none overflow-hidden" aria-hidden="true">
+      <span
+        class="block font-extrabold leading-[0.78] tracking-tightest text-ink"
+        style="font-size: clamp(3.25rem, 19vw, 13rem)"
+        >A<span class="text-ultra">Z</span>T<span class="text-ultra">Y</span><span class="text-ultra">X</span></span
+      >
+    </div>
+  </div>
+</footer>

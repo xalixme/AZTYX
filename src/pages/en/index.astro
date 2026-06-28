@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Page from "../../components/Page.astro";
+import { getDict } from "../../i18n";
+
+export const prerender = true; // página estática (Lighthouse alto)
+
+const lang = "en";
+const t = getDict(lang);
+---
+
+<Layout lang={lang} title={t.meta.title} description={t.meta.description}>
+  <Page lang={lang} t={t} />
+</Layout>

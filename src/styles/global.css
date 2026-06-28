@@ -1,0 +1,179 @@
+/* Variables de diseño primero (deben preceder a todo salvo otros @import). */
+@import "./tokens.css";
+@import "tailwindcss";
+
+/* ============================================================
+   THEME (Tailwind v4) — los colores se mapean "inline" a los
+   tokens semánticos para que la clase .invert (que reescribe
+   --paper/--ink/--ultra…) dé la vuelta a todas las utilidades.
+   ============================================================ */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ultra: var(--ultra);
+  --color-ultra-press: var(--ultra-press);
+  --color-grey: var(--grey);
+  --color-line: var(--line);
+}
+
+@theme {
+  --font-sans: "Archivo Variable", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --tracking-tightest: -0.045em; /* titulares display tensos */
+  --tracking-tighter: -0.03em;
+
+  --ease-swiss: cubic-bezier(0.22, 1, 0.36, 1); /* salida precisa, sin rebote */
+
+  --animate-cursor-blink: cursor-blink 1.05s steps(1) infinite;
+  @keyframes cursor-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Selección con el acento de marca. */
+  ::selection {
+    background: var(--ultra);
+    color: var(--paper);
+  }
+
+  /* Foco visible y accesible (no se pierde nunca con teclado). */
+  :focus-visible {
+    outline: 2px solid var(--ultra);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+/* ============================================================
+   UTILIDADES DE COMPOSICIÓN (retícula Swiss)
+   ============================================================ */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .section-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .rule {
+    height: 1px;
+    background: var(--rule);
+    border: 0;
+  }
+
+  .link-ul {
+    background-image: linear-gradient(var(--ultra), var(--ultra));
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s var(--ease-swiss);
+    text-decoration: none;
+  }
+  .link-ul:hover,
+  .link-ul:focus-visible {
+    background-size: 100% 1.5px;
+  }
+}
+
+/* ============================================================
+   MOTION — reveals orquestados (IntersectionObserver añade .is-in)
+   ============================================================ */
+@layer utilities {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity var(--dur) var(--ease-swiss),
+      transform var(--dur) var(--ease-swiss);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-rule] {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.9s var(--ease-swiss);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-rule].is-in {
+    transform: scaleX(1);
+  }
+}
+
+/* ============================================================
+   ACCESIBILIDAD — respetar reduce motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal],
+  [data-rule] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

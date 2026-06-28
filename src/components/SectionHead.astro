@@ -1,0 +1,36 @@
+---
+// Encabezado de sección reutilizable (numeral mono + título display + filete que se dibuja).
+interface Props {
+  num: string;
+  title: string;
+  kicker?: string;
+  lead?: string;
+  class?: string;
+}
+const { num, title, kicker, lead, class: klass = "" } = Astro.props;
+---
+
+<div class={klass}>
+  <hr class="rule mb-8 origin-left" data-rule />
+  <div class="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-12">
+    <div class="md:col-span-7">
+      <div class="flex items-start gap-4">
+        <span class="section-num text-sm text-ultra" data-reveal>{num}</span>
+        <h2
+          class="font-extrabold leading-[0.95] tracking-tighter"
+          style="font-size: clamp(2rem, 5.5vw, 3.75rem)"
+          data-reveal
+          set:html={title}
+        />
+      </div>
+      {kicker && <p class="kicker mt-4 pl-9" data-reveal>{kicker}</p>}
+    </div>
+    {
+      lead && (
+        <p class="self-end text-pretty text-base leading-relaxed text-ink-soft md:col-span-5" data-reveal style="--reveal-delay:120ms">
+          {lead}
+        </p>
+      )
+    }
+  </div>
+</div>

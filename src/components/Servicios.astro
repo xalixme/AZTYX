@@ -1,0 +1,47 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { type Dict } from "../i18n";
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const sv = t.services;
+---
+
+<section id="services" class="scroll-mt-24 py-20 sm:py-28">
+  <div class="shell">
+    <SectionHead num={sv.num} title={sv.title} lead={sv.lead} />
+
+    {(() => {
+      const total = String(sv.items.length).padStart(2, "0");
+      return (
+        <div class="mt-14 grid grid-cols-1 gap-px overflow-hidden border border-line bg-line md:grid-cols-2">
+          {sv.items.map((it, i) => (
+            <article class="group relative bg-paper p-7 sm:p-9" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <p class="mb-6 font-mono text-sm text-grey">{String(i + 1).padStart(2, "0")} / {total}</p>
+              <h3 class="mb-3 text-2xl font-bold leading-tight tracking-tight text-ink transition-colors duration-300 group-hover:text-ultra">
+                {it.k}
+              </h3>
+              <p class="text-[0.95rem] leading-relaxed text-ink-soft">{it.v}</p>
+              <span class="mt-6 block text-ultra opacity-0 transition-all duration-300 ease-swiss group-hover:opacity-100" aria-hidden="true">→</span>
+            </article>
+          ))}
+        </div>
+      );
+    })()}
+
+    <!-- Sectores a los que aplica -->
+    <div class="mt-12">
+      <p class="kicker mb-5" data-reveal>{sv.sectorsLabel}</p>
+      <ul class="flex flex-wrap gap-2" data-reveal>
+        {
+          sv.sectors.map((s) => (
+            <li class="border border-line px-3 py-1.5 font-mono text-[0.78rem] text-ink-soft transition-colors duration-200 hover:border-ink hover:text-ink">
+              {s}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

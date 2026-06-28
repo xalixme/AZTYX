@@ -1,0 +1,23 @@
+#:schema node_modules/wrangler/config-schema.json
+# Proyecto Cloudflare Workers (el adaptador Astro 14 ya no usa Pages).
+# `main` apunta al entrypoint del adaptador; los assets los gestiona el adaptador.
+main = "@astrojs/cloudflare/entrypoints/server"
+name = "aztyx-portfolio"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Variables públicas (no secretas).
+[vars]
+SITE_NAME = "AZTYX — Portfolio"
+SITE_LOCALE = "es"
+# Site key pública de Cloudflare Turnstile (test key que siempre pasa; sustituir en prod).
+TURNSTILE_SITE_KEY = "1x00000000000000000000AA"
+
+# Rate-limit del formulario de contacto (binding KV opcional).
+# Crear con `wrangler kv namespace create RL` y descomentar:
+# [[kv_namespaces]]
+# binding = "RL"
+# id = "TU_KV_NAMESPACE_ID"
+
+# Secretos (configurar con `wrangler secret put`):
+#   TURNSTILE_SECRET · RESEND_API_KEY · CONTACT_TO

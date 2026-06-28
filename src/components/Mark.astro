@@ -1,0 +1,42 @@
+---
+// Marca AZTYX: una flecha-vector ascendente sobre los ejes X·Y·Z.
+// Los ejes usan currentColor (se adaptan a claro/oscuro); el vector va en ultramar
+// vía `style` (CSS sí resuelve var() en cualquier navegador, y el bloque .invert lo aclara).
+// SVG procedural, cero stock.
+interface Props {
+  size?: number;
+  accent?: boolean; // vector en ultramar (true) o en currentColor (false)
+  class?: string;
+  title?: string;
+}
+const { size = 28, accent = true, class: klass = "", title } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 100 100"
+  fill="none"
+  class={klass}
+  role={title ? "img" : "presentation"}
+  aria-label={title}
+  aria-hidden={title ? undefined : "true"}
+>
+  {title && <title>{title}</title>}
+  <!-- Ejes X·Y·Z desde el origen -->
+  <g stroke="currentColor" stroke-width="6" stroke-linecap="round" opacity="0.85">
+    <line x1="26" y1="74" x2="88" y2="74" />
+    <line x1="26" y1="74" x2="26" y2="12" />
+    <line x1="26" y1="74" x2="9" y2="91" />
+  </g>
+  <!-- Vector (dirección + magnitud) con punta de flecha -->
+  <g
+    stroke-width="9"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    style={accent ? "stroke: var(--ultra)" : "stroke: currentColor"}
+  >
+    <path d="M26 74 L71 29" />
+    <path d="M53 29 L71 29 L71 47" />
+  </g>
+</svg>
