@@ -10,11 +10,11 @@ const { lang, t } = Astro.props;
 const path = Astro.url.pathname;
 
 const links = [
-  { href: "#work", num: "01", label: t.nav.work },
-  { href: "#skills", num: "02", label: t.nav.skills },
-  { href: "#trayectoria", num: "03", label: t.trayectoria.title },
-  { href: "#case", num: "04", label: t.nav.case },
-  { href: "#contact", num: "06", label: t.nav.contact },
+  { href: "#demo", num: "01", label: t.nav.demo },
+  { href: "#work", num: "02", label: t.nav.work },
+  { href: "#case", num: "03", label: t.nav.case },
+  { href: "#services", num: "04", label: t.nav.services },
+  { href: "#contact", num: "05", label: t.nav.contact },
 ];
 const esHref = altLangPath(path, "es");
 const enHref = altLangPath(path, "en");

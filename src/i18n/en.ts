@@ -8,9 +8,11 @@ export const en = {
   },
 
   nav: {
+    demo: "Demo",
     work: "How I work",
     skills: "Skills",
     case: "Case",
+    services: "Services",
     contact: "Contact",
     toContact: "Let's talk",
     skipToContent: "Skip to content",
@@ -23,17 +25,18 @@ export const en = {
   },
 
   hero: {
-    kicker: "Sysadmin · Full-stack · Cutting-edge AI",
-    title: ["I ship production", "software", "at high speed."],
-    lead: "I pair systems administration and full-stack development with Claude-assisted workflows (agentic coding). Real, complete, secure product — without giving up performance or accessibility.",
-    ctaPrimary: "See the flagship case",
-    ctaSecondary: "Let's work together",
+    kicker: "Digital product studio · Web + Admin + Booking + AI",
+    title: ["Your business deserves", "more than a website:", "a system."],
+    lead: "I build complete platforms — public site, self-managed admin, bookings and analytics without tracking cookies — on Cloudflare's edge. Genuinely fast, secure by default, with running costs from €0.",
+    ctaPrimary: "Try the live demo",
+    ctaSecondary: "Let's talk about your project",
+    chipsLabel: "Pick your sector and try it",
     specsLabel: "Spec",
     specs: [
       { k: "Location", v: "Spain · remote" },
-      { k: "Languages", v: "ES · EN" },
-      { k: "Terrain", v: "Astro · Cloudflare · AI" },
-      { k: "Status", v: "Freelance / hire" },
+      { k: "Running cost", v: "from €0/month" },
+      { k: "Languages", v: "up to 9 · RTL" },
+      { k: "Legal", v: "GDPR · no banner" },
     ],
     axesLabel: "Three axes · one vector",
     axes: [
@@ -43,8 +46,26 @@ export const en = {
     ],
   },
 
-  work: {
+  showroom: {
     num: "01",
+    title: "Try it: your sector, live",
+    lead: "This is not a mockup: it's an interactive demo of the modules I build — bookings, multilingual with RTL, analytics without tracking cookies. Switch sector, switch language, book.",
+    modulesLabel: "Active modules",
+    signalsLabel: "Signals captured",
+    signalsNote: "first-party analytics · 0 tracking cookies",
+    perfLabel: "This very page · HTML from the edge in",
+    hint: "Every click you make in there is a measurable signal — that's how my analytics works.",
+    sectors: [
+      { id: "restaurante", label: "Restaurant" },
+      { id: "clinica", label: "Clinic" },
+      { id: "hotel", label: "Lodging" },
+      { id: "belleza", label: "Beauty" },
+      { id: "comercio", label: "Retail" },
+    ],
+  },
+
+  work: {
+    num: "02",
     title: "How I work",
     lead: "AI doesn't replace judgment — it multiplies it. I decide the architecture and where not to compromise; the agent speeds up execution. The result is production software in a fraction of the time.",
     humanTitle: "The human decides",
@@ -198,7 +219,7 @@ export const en = {
   },
 
   case: {
-    num: "04",
+    num: "03",
     kicker: "Case study · Live in production",
     title: "Taberna La Manuela",
     place: "Córdoba, next to the Mosque-Cathedral",
@@ -228,7 +249,7 @@ export const en = {
   },
 
   services: {
-    num: "05",
+    num: "04",
     title: "How I can help",
     lead: "I don't build sites for one sector: I build the operating system of a local business. Reusable modules I assemble per case, at near-zero running cost.",
     items: [
@@ -252,7 +273,7 @@ export const en = {
   },
 
   contact: {
-    num: "06",
+    num: "05",
     title: "Let's work together",
     lead: "Tell me about the project. I reply to every message.",
     form: {

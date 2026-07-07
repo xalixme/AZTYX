@@ -58,13 +58,31 @@ const lines = t.hero.title;
 
       <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4" data-reveal style="--reveal-delay:680ms">
         <a
-          href="#case"
+          href="#demo"
           class="group inline-flex items-center gap-3 bg-ink px-6 py-3.5 font-mono text-sm font-medium text-paper transition-colors duration-300 ease-swiss hover:bg-ultra"
         >
           {t.hero.ctaPrimary}
-          <span class="transition-transform duration-300 ease-swiss group-hover:translate-x-1" aria-hidden="true">→</span>
+          <span class="transition-transform duration-300 ease-swiss group-hover:translate-y-1" aria-hidden="true">↓</span>
         </a>
         <a href="#contact" class="link-ul font-mono text-sm text-ink">{t.hero.ctaSecondary}</a>
+      </div>
+
+      <!-- Chips de sector: entrada directa al showroom, ya con su sector activado -->
+      <div class="mt-10" data-reveal style="--reveal-delay:720ms">
+        <p class="kicker mb-3">{t.hero.chipsLabel}</p>
+        <div class="flex flex-wrap gap-2">
+          {
+            t.showroom.sectors.map((sec) => (
+              <a
+                href="#demo"
+                data-sector={sec.id}
+                class="border border-line px-3.5 py-1.5 font-mono text-[0.78rem] text-ink-soft transition-colors duration-200 hover:border-ultra hover:text-ultra"
+              >
+                {sec.label} ↓
+              </a>
+            ))
+          }
+        </div>
       </div>
 
       <!-- Los tres ejes de la marca AZTYX (X·Y·Z) -->
@@ -117,7 +135,10 @@ const lines = t.hero.title;
   function typeHeroSignature() {
     const el = document.getElementById("hero-typed");
     if (!el) return;
-    const full = "humano + agente · a cuatro manos";
+    const full =
+      document.documentElement.lang === "en"
+        ? "human + agent · four hands"
+        : "humano + agente · a cuatro manos";
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
       el.textContent = full;

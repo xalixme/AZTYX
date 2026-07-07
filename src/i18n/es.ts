@@ -9,9 +9,11 @@ export const es = {
   },
 
   nav: {
+    demo: "Demo",
     work: "Cómo trabajo",
     skills: "Skills",
     case: "Caso",
+    services: "Servicios",
     contact: "Contacto",
     toContact: "Hablemos",
     skipToContent: "Saltar al contenido",
@@ -24,18 +26,19 @@ export const es = {
   },
 
   hero: {
-    kicker: "Sysadmin · Full-stack · IA de vanguardia",
+    kicker: "Estudio de producto digital · Web + Panel + Reservas + IA",
     // Cada elemento es una línea del titular; la última se pinta en ultramar.
-    title: ["Envío software", "de producción", "a gran velocidad."],
-    lead: "Empareja administración de sistemas y desarrollo full-stack con flujos de trabajo asistidos por Claude (agentic coding). Producto real, completo y seguro — sin ceder en rendimiento ni accesibilidad.",
-    ctaPrimary: "Ver el caso estrella",
-    ctaSecondary: "Trabajemos juntos",
+    title: ["Tu negocio merece", "más que una web:", "un sistema."],
+    lead: "Construyo plataformas completas — web pública, panel autogestionable, reservas y analítica sin cookies de seguimiento — sobre el edge de Cloudflare. Rápidas de verdad, seguras de fábrica y con coste de operación desde 0 €.",
+    ctaPrimary: "Probar la demo en vivo",
+    ctaSecondary: "Hablemos de tu proyecto",
+    chipsLabel: "Elige tu sector y pruébalo",
     specsLabel: "Ficha",
     specs: [
       { k: "Ubicación", v: "España · remoto" },
-      { k: "Idiomas", v: "ES · EN" },
-      { k: "Terreno", v: "Astro · Cloudflare · IA" },
-      { k: "Estado", v: "Freelance / contratación" },
+      { k: "Coste operación", v: "desde 0 €/mes" },
+      { k: "Idiomas", v: "hasta 9 · RTL" },
+      { k: "Legal", v: "RGPD · sin banner" },
     ],
     axesLabel: "Tres ejes · un vector",
     axes: [
@@ -45,8 +48,26 @@ export const es = {
     ],
   },
 
-  work: {
+  showroom: {
     num: "01",
+    title: "Pruébalo: tu sector, en vivo",
+    lead: "No es una maqueta: es una demostración interactiva de los módulos que construyo — reservas, multi-idioma con RTL, analítica sin cookies de seguimiento. Cambia de sector, cambia de idioma, reserva.",
+    modulesLabel: "Módulos activos",
+    signalsLabel: "Señales captadas",
+    signalsNote: "analítica first-party · 0 cookies de seguimiento",
+    perfLabel: "Esta misma página · HTML desde el edge en",
+    hint: "Cada clic que haces ahí dentro es una señal medible — así funciona mi analítica.",
+    sectors: [
+      { id: "restaurante", label: "Restaurante" },
+      { id: "clinica", label: "Clínica" },
+      { id: "hotel", label: "Alojamiento" },
+      { id: "belleza", label: "Belleza" },
+      { id: "comercio", label: "Comercio" },
+    ],
+  },
+
+  work: {
+    num: "02",
     title: "Cómo trabajo",
     lead: "La IA no sustituye el criterio: lo multiplica. Yo decido la arquitectura y dónde no se cede; el agente acelera la ejecución. El resultado es producto en producción en una fracción del tiempo.",
     humanTitle: "El humano decide",
@@ -200,7 +221,7 @@ export const es = {
   },
 
   case: {
-    num: "04",
+    num: "03",
     kicker: "Caso de estudio · Producto en producción",
     title: "Taberna La Manuela",
     place: "Córdoba, junto a la Mezquita-Catedral",
@@ -230,7 +251,7 @@ export const es = {
   },
 
   services: {
-    num: "05",
+    num: "04",
     title: "En qué puedo ayudarte",
     lead: "No hago webs de un sector: construyo el sistema operativo de un negocio local. Módulos reutilizables que ensamblo según el caso, a coste de operación casi cero.",
     items: [
@@ -254,7 +275,7 @@ export const es = {
   },
 
   contact: {
-    num: "06",
+    num: "05",
     title: "Trabajemos juntos",
     lead: "Cuéntame el proyecto. Respondo a todos los mensajes.",
     form: {

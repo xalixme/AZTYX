@@ -2,9 +2,8 @@
 // Composición de la página (compartida por ES y EN).
 import Header from "./Header.astro";
 import Hero from "./Hero.astro";
+import Showroom from "./Showroom.astro";
 import ComoTrabajo from "./ComoTrabajo.astro";
-import Skills from "./Skills.astro";
-import Trayectoria from "./Trayectoria.astro";
 import CasoManuela from "./CasoManuela.astro";
 import Servicios from "./Servicios.astro";
 import Contacto from "./Contacto.astro";
@@ -22,9 +21,8 @@ const { lang, t } = Astro.props;
 <Header lang={lang} t={t} />
 <main id="main">
   <Hero t={t} />
+  <Showroom t={t} lang={lang} />
   <ComoTrabajo t={t} />
-  <Skills t={t} />
-  <Trayectoria t={t} />
   <CasoManuela t={t} />
   <Servicios t={t} />
   <Contacto t={t} />

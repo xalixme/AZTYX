@@ -1,0 +1,361 @@
+---
+// SHOWROOM — la pieza central del portfolio: una demo interactiva que se
+// transforma según el sector del visitante. No cuenta los módulos: los enseña
+// funcionando (reservas, multi-idioma con RTL, analítica sin cookies).
+// Vanilla JS + View Transitions API cuando existe. Cero dependencias.
+import SectionHead from "./SectionHead.astro";
+import { type Dict, type Lang } from "../i18n";
+
+interface Props {
+  t: Dict;
+  lang: Lang;
+}
+const { t, lang } = Astro.props;
+const s = t.showroom;
+---
+
+<section id="demo" class="scroll-mt-24 py-20 sm:py-28">
+  <div class="shell">
+    <SectionHead num={s.num} title={s.title} lead={s.lead} />
+
+    <!-- Selector de sector -->
+    <div class="mt-10 flex flex-wrap gap-2" role="group" aria-label="Sector" data-reveal>
+      {
+        s.sectors.map((sec, i) => (
+          <button
+            type="button"
+            data-sector={sec.id}
+            aria-pressed={i === 0 ? "true" : "false"}
+            class="sr-tab border border-line px-4 py-2 font-mono text-[0.8rem] text-ink-soft transition-colors duration-200 hover:border-ink hover:text-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-paper"
+          >
+            {sec.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+      <!-- Marco de "navegador" con la demo -->
+      <div class="lg:col-span-8" data-reveal>
+        <div class="relative overflow-hidden border border-line bg-paper">
+          <!-- Chrome de ventana -->
+          <div class="flex items-center gap-3 border-b border-line px-4 py-2.5">
+            <span class="flex gap-1.5" aria-hidden="true">
+              <span class="h-2.5 w-2.5 rounded-full border border-line-strong"></span>
+              <span class="h-2.5 w-2.5 rounded-full border border-line-strong"></span>
+              <span class="h-2.5 w-2.5 rounded-full border border-line-strong"></span>
+            </span>
+            <span class="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full bg-paper-2 px-4 py-1 font-mono text-[0.7rem] text-grey">
+              <span aria-hidden="true">🔒</span>
+              <span id="sr-url">—</span>
+            </span>
+            <span class="w-10" aria-hidden="true"></span>
+          </div>
+
+          <!-- Cuerpo de la demo (lo pinta el script) -->
+          <div id="sr-body" class="min-h-[24rem] p-5 sm:p-7" aria-live="polite"></div>
+
+          <!-- Toast de confirmación -->
+          <div
+            id="sr-toast"
+            hidden
+            role="status"
+            class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-ink px-5 py-2.5 font-mono text-[0.78rem] text-paper shadow-lg"
+          >
+          </div>
+        </div>
+        <p class="mt-3 font-mono text-[0.72rem] text-grey">
+          {s.perfLabel} <span id="sr-perf" class="text-ultra">…</span> ms
+        </p>
+      </div>
+
+      <!-- Raíl: módulos activos + analítica en vivo -->
+      <aside class="lg:col-span-4" data-reveal style="--reveal-delay:120ms">
+        <div class="border border-line bg-paper-2/40 p-5 sm:p-6">
+          <p class="kicker mb-4">{s.modulesLabel}</p>
+          <ul id="sr-modules" class="space-y-2.5"></ul>
+        </div>
+
+        <div class="mt-4 border border-line p-5 sm:p-6">
+          <p class="kicker mb-4">{s.signalsLabel}</p>
+          <div class="flex items-end justify-between gap-4">
+            <span id="sr-count" class="font-mono text-5xl font-semibold leading-none text-ultra">0</span>
+            <div id="sr-bars" class="flex h-12 flex-1 items-end justify-end gap-[3px]" aria-hidden="true"></div>
+          </div>
+          <p class="mt-3 border-t border-line pt-3 font-mono text-[0.7rem] leading-relaxed text-grey">
+            {s.signalsNote}<br />
+            <span id="sr-meta"></span>
+          </p>
+        </div>
+
+        <p class="mt-4 font-mono text-[0.72rem] leading-relaxed text-grey">↳ {s.hint}</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ pageLang: lang }}>
+  (() => {
+    // ——— Textos de la interfaz de la demo (su propio mini-i18n, incluye RTL) ———
+    const UI = {
+      es: { today: "Hoy", confirm: "Confirmar", done: "Confirmado · recordatorio programado", pick: "Elige hora" },
+      en: { today: "Today", confirm: "Confirm", done: "Confirmed · reminder scheduled", pick: "Pick a time" },
+      ar: { today: "اليوم", confirm: "تأكيد", done: "تم التأكيد · تمت جدولة التذكير", pick: "اختر الوقت" },
+    };
+
+    // ——— Datos por sector (nombre ficticio, módulos reales) ———
+    const SECTORS = {
+      restaurante: {
+        url: "casalola.es",
+        name: "Casa Lola",
+        tag: { es: "Cocina cordobesa", en: "Córdoba cuisine", ar: "مطبخ قرطبي" },
+        items: [
+          { n: "Salmorejo de la casa", p: "6,50 €", b: ["V", "SG"] },
+          { n: "Flamenquín artesano", p: "9,00 €", b: [] },
+          { n: "Tataki de atún rojo", p: "14,50 €", b: ["SG"] },
+        ],
+        cta: { es: "Reservar mesa", en: "Book a table", ar: "احجز طاولة" },
+        slots: ["13:30", "14:00", "21:00", "21:30"],
+        modules: {
+          es: ["Reservas de mesa", "Alérgenos UE 1169/2011", "Multi-idioma · RTL", "Analítica sin cookies", "RGPD de fábrica"],
+          en: ["Table bookings", "EU 1169/2011 allergens", "Multilingual · RTL", "Cookieless analytics", "GDPR by default"],
+        },
+      },
+      clinica: {
+        url: "clinicaarga.es",
+        name: "Clínica Arga",
+        tag: { es: "Fisioterapia · Podología", en: "Physio · Podiatry", ar: "علاج طبيعي" },
+        items: [
+          { n: "Dra. Ibarra — Fisioterapia", p: "45 €", b: [] },
+          { n: "Dr. Cano — Podología", p: "38 €", b: [] },
+          { n: "Sesión de readaptación", p: "55 €", b: [] },
+        ],
+        cta: { es: "Pedir cita", en: "Book appointment", ar: "احجز موعداً" },
+        slots: ["09:00", "10:30", "12:00", "17:00"],
+        modules: {
+          es: ["Cita previa por profesional", "Recordatorios anti no-show", "Área paciente · 2FA", "Analítica sin cookies", "RGPD estricto (salud)"],
+          en: ["Per-professional booking", "No-show reminders", "Patient area · 2FA", "Cookieless analytics", "Strict GDPR (health)"],
+        },
+      },
+      hotel: {
+        url: "aldaba.eus",
+        name: "Hostal Aldaba",
+        tag: { es: "Casco viejo · Bilbao", en: "Old town · Bilbao", ar: "البلدة القديمة" },
+        items: [
+          { n: "Doble con vista al patio", p: "78 €/noche", b: [] },
+          { n: "Suite del mirador", p: "120 €/noche", b: [] },
+          { n: "Desayuno de caserío", p: "+9 €", b: [] },
+        ],
+        cta: { es: "Reservar estancia", en: "Book your stay", ar: "احجز إقامتك" },
+        slots: ["12 jul", "13 jul", "19 jul", "20 jul"],
+        modules: {
+          es: ["Motor de reservas", "Pagos / señal", "Multi-idioma · RTL", "Analítica sin cookies", "SEO local + Maps"],
+          en: ["Booking engine", "Payments / deposit", "Multilingual · RTL", "Cookieless analytics", "Local SEO + Maps"],
+        },
+      },
+      belleza: {
+        url: "studiokera.es",
+        name: "Studio Kera",
+        tag: { es: "Peluquería · Estética", en: "Hair · Beauty", ar: "صالون تجميل" },
+        items: [
+          { n: "Corte + peinado", p: "24 €", b: [] },
+          { n: "Color completo", p: "45 €", b: [] },
+          { n: "Bono 5 sesiones", p: "99 €", b: ["-18%"] },
+        ],
+        cta: { es: "Reservar cita", en: "Book a slot", ar: "احجز موعداً" },
+        slots: ["10:00", "11:30", "16:00", "18:30"],
+        modules: {
+          es: ["Agenda por profesional", "Bonos y packs", "Recordatorios anti no-show", "Analítica sin cookies", "RGPD de fábrica"],
+          en: ["Per-stylist agenda", "Passes & packs", "No-show reminders", "Cookieless analytics", "GDPR by default"],
+        },
+      },
+      comercio: {
+        url: "ultramarinosval.es",
+        name: "Ultramarinos Val",
+        tag: { es: "Producto local", en: "Local produce", ar: "منتجات محلية" },
+        items: [
+          { n: "Aceite picual 5 L", p: "39 €", b: [] },
+          { n: "Queso curado de oveja", p: "12 €", b: [] },
+          { n: "Lote regalo artesano", p: "29 €", b: ["top"] },
+        ],
+        cta: { es: "Recoger en tienda", en: "Click & collect", ar: "استلام من المتجر" },
+        slots: ["12:00", "13:00", "18:00", "19:00"],
+        modules: {
+          es: ["Click & collect", "Catálogo autogestionable", "Multi-idioma · RTL", "Analítica sin cookies", "SEO local + Maps"],
+          en: ["Click & collect", "Self-managed catalog", "Multilingual · RTL", "Cookieless analytics", "Local SEO + Maps"],
+        },
+      },
+    };
+
+    const RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const state = { sector: "restaurante", lang: pageLang === "en" ? "en" : "es", slot: null, signals: 0 };
+
+    const $ = (id) => document.getElementById(id);
+
+    // ——— Analítica de la demo: cada interacción es una "señal" ———
+    function signal() {
+      state.signals++;
+      const count = $("sr-count");
+      const bars = $("sr-bars");
+      if (!count || !bars) return;
+      count.textContent = String(state.signals);
+      const bar = document.createElement("span");
+      bar.className = "w-1.5 bg-ultra";
+      bar.style.height = 22 + ((state.signals * 17) % 68) + "%";
+      bars.appendChild(bar);
+      while (bars.children.length > 18) bars.removeChild(bars.firstChild);
+      const meta = $("sr-meta");
+      if (meta) {
+        const dev = window.matchMedia("(max-width: 640px)").matches ? "móvil" : "desktop";
+        meta.textContent = `lang:${state.lang} · ${dev} · ${new Date().toLocaleTimeString().slice(0, 5)}`;
+      }
+    }
+
+    // ——— Render de la demo ———
+    function render() {
+      const d = SECTORS[state.sector];
+      const ui = UI[state.lang];
+      const body = $("sr-body");
+      const url = $("sr-url");
+      if (!d || !body) return;
+      if (url) url.textContent = d.url;
+
+      const rtl = state.lang === "ar";
+      const langBtn = (l) =>
+        `<button type="button" data-srlang="${l}" aria-pressed="${state.lang === l}" class="px-2 py-0.5 font-mono text-[0.7rem] ${
+          state.lang === l ? "bg-ink text-paper" : "text-grey hover:text-ink"
+        }">${l.toUpperCase()}</button>`;
+
+      const badges = (b) =>
+        b.map((x) => `<span class="ml-1.5 border border-ultra px-1 font-mono text-[0.6rem] text-ultra">${x}</span>`).join("");
+
+      const items = d.items
+        .map(
+          (it, i) => `
+        <div class="flex items-baseline justify-between gap-4 border-t border-line py-3.5">
+          <span class="text-[0.95rem] font-semibold text-ink">${it.n}${badges(it.b)}</span>
+          <span class="whitespace-nowrap font-mono text-sm text-ultra">${it.p}</span>
+        </div>`
+        )
+        .join("");
+
+      const slots = d.slots
+        .map(
+          (sl) => `
+        <button type="button" data-slot="${sl}" aria-pressed="${state.slot === sl}" class="border px-3 py-1.5 font-mono text-[0.78rem] transition-colors ${
+          state.slot === sl ? "border-ultra bg-ultra text-white" : "border-line text-ink-soft hover:border-ink hover:text-ink"
+        }">${sl}</button>`
+        )
+        .join("");
+
+      body.dir = rtl ? "rtl" : "ltr";
+      body.innerHTML = `
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-2xl font-extrabold tracking-tight text-ink">${d.name}</p>
+            <p class="mt-0.5 font-mono text-[0.72rem] text-grey">${d.tag[state.lang]}</p>
+          </div>
+          <div class="flex shrink-0 gap-1 border border-line p-0.5">${langBtn("es")}${langBtn("en")}${langBtn("ar")}</div>
+        </div>
+        <div class="mt-5">${items}</div>
+        <div class="mt-6 border-t border-line-strong pt-5">
+          <p class="kicker mb-3">${d.cta[state.lang]} · <span class="normal-case">${ui.today}</span></p>
+          <div class="flex flex-wrap gap-2">${slots}</div>
+          <button type="button" data-confirm ${state.slot ? "" : "disabled"}
+            class="mt-4 bg-ink px-5 py-2.5 font-mono text-[0.8rem] text-paper transition-colors hover:bg-ultra disabled:cursor-not-allowed disabled:opacity-40">
+            ${ui.confirm}${state.slot ? " · " + state.slot : ""}
+          </button>
+        </div>`;
+    }
+
+    // Transición suave entre estados (View Transitions API si existe).
+    function update() {
+      if (!RM && document.startViewTransition) {
+        document.startViewTransition(render);
+      } else {
+        render();
+      }
+    }
+
+    function showToast(text) {
+      const toast = $("sr-toast");
+      if (!toast) return;
+      toast.textContent = "✓ " + text;
+      toast.hidden = false;
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => (toast.hidden = true), 2600);
+    }
+
+    // ——— Interacción (delegación global: sirve para tabs y chips del hero) ———
+    function onClick(e) {
+      const sectorEl = e.target.closest("[data-sector]");
+      if (sectorEl) {
+        state.sector = sectorEl.dataset.sector;
+        state.slot = null;
+        document.querySelectorAll(".sr-tab").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sector === state.sector)));
+        update();
+        signal();
+        return;
+      }
+      const langEl = e.target.closest("[data-srlang]");
+      if (langEl) {
+        state.lang = langEl.dataset.srlang;
+        update();
+        signal();
+        return;
+      }
+      const slotEl = e.target.closest("[data-slot]");
+      if (slotEl) {
+        state.slot = slotEl.dataset.slot;
+        update();
+        signal();
+        return;
+      }
+      const confirmEl = e.target.closest("[data-confirm]");
+      if (confirmEl && state.slot) {
+        showToast(UI[state.lang].done);
+        state.slot = null;
+        update();
+        signal();
+      }
+    }
+
+    // ——— Módulos activos del raíl (en el idioma de la página) ———
+    function renderModules() {
+      const list = $("sr-modules");
+      if (!list) return;
+      const mods = SECTORS[state.sector].modules[pageLang === "en" ? "en" : "es"];
+      list.innerHTML = mods
+        .map(
+          (m) => `<li class="flex items-baseline gap-2.5 text-[0.88rem] text-ink">
+            <span class="font-mono text-ultra" aria-hidden="true">✓</span>${m}</li>`
+        )
+        .join("");
+    }
+
+    // ——— Métrica real de esta página (Navigation Timing) ———
+    function renderPerf() {
+      const el = $("sr-perf");
+      const nav = performance.getEntriesByType("navigation")[0];
+      if (el && nav) el.textContent = String(Math.max(1, Math.round(nav.responseStart)));
+    }
+
+    function init() {
+      const body = $("sr-body");
+      if (!body || body.dataset.bound === "1") return;
+      body.dataset.bound = "1";
+      document.addEventListener("click", (e) => {
+        onClick(e);
+        // El raíl de módulos depende del sector: refrescar tras cada interacción.
+        if (e.target.closest("[data-sector]")) renderModules();
+      });
+      render();
+      renderModules();
+      renderPerf();
+    }
+
+    document.addEventListener("astro:page-load", init);
+    init();
+  })();
+</script>

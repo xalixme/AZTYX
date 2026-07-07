@@ -16,6 +16,7 @@
   --color-ultra-press: var(--ultra-press);
   --color-grey: var(--grey);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
 }
 
 @theme {
