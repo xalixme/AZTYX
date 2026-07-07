@@ -1,4 +1,4 @@
-# Andro — Portfolio
+# AZTYX — Portfolio
 
 Portfolio personal: **sysadmin + full-stack que envía producto real, rápido**, emparejando
 criterio técnico con IA de vanguardia (Claude / agentic coding).

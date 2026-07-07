@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
 
@@ -15,6 +15,12 @@ export default defineConfig({
     platformProxy: { enabled: true }, // emula bindings (KV, vars) en local
   }),
   devToolbar: { enabled: false },
+  env: {
+    schema: {
+      PUBLIC_TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', default: '1x00000000000000000000AA' })
+    }
+  },
+
   i18n: {
     defaultLocale: "es",
     locales: ["es", "en"],

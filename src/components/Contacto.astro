@@ -8,7 +8,7 @@ const c = t.contact;
 
 // Site key pública de Turnstile. Test key (siempre pasa) por defecto; en
 // producción definir PUBLIC_TURNSTILE_SITE_KEY en el entorno.
-const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
+import { PUBLIC_TURNSTILE_SITE_KEY } from "astro:env/client";
 
 const direct = [
   { label: "Email", value: c.email, href: `mailto:${c.email}` },
@@ -23,7 +23,12 @@ const direct = [
     <div class="lg:col-span-5">
       <hr class="rule mb-8 origin-left" data-rule />
       <div class="flex items-start gap-4">
-        <span class="section-num text-sm text-ultra" data-reveal>{c.num}</span>
+        <span class="section-num text-sm text-ultra num-scroll" data-reveal>
+          <span class="num-scroll-inner">
+            <span>00</span>
+            <span>{c.num}</span>
+          </span>
+        </span>
         <h2 class="font-extrabold leading-[0.95] tracking-tighter text-ink" style="font-size: clamp(2rem, 5.5vw, 3.75rem)" data-reveal>
           {c.title}
         </h2>
@@ -76,7 +81,7 @@ const direct = [
         {
           import.meta.env.PROD && (
             <div class="sm:col-span-2">
-              <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="auto" />
+              <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} data-theme="auto" />
             </div>
           )
         }
@@ -97,12 +102,12 @@ const direct = [
 <!-- Cloudflare Turnstile (carga diferida, solo en producción) -->
 {import.meta.env.PROD && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />}
 
-<script
-  define:vars={{
-    msg: { sending: c.form.sending, success: c.form.success, error: c.form.error, invalid: c.form.invalid, send: c.form.send },
-  }}
->
+<script id="contact-config" type="application/json" data-msg={JSON.stringify({ sending: c.form.sending, success: c.form.success, error: c.form.error, invalid: c.form.invalid, send: c.form.send })}></script>
+<script>
   function setupContactForm() {
+    const configEl = document.getElementById("contact-config");
+    if (!configEl) return;
+    const msg = JSON.parse(configEl.dataset.msg || "{}");
     const form = document.getElementById("contact-form");
     if (!form || form.dataset.bound === "1") return;
     form.dataset.bound = "1";
