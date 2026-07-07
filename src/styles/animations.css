@@ -1,0 +1,43 @@
+/* Animación de Numerales Avanzando (Scroll-driven) */
+@property --num-offset {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.num-scroll {
+  display: inline-block;
+  overflow: hidden;
+  height: 1.2em;
+  line-height: 1.2em;
+  vertical-align: bottom;
+}
+
+.num-scroll-inner {
+  display: flex;
+  flex-direction: column;
+  animation: num-tick linear both;
+  animation-timeline: view();
+  animation-range: entry 20% cover 40%;
+}
+
+@keyframes num-tick {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* Fallback: sin scroll-timeline */
+@supports not (animation-timeline: view()) {
+  .num-scroll-inner {
+    animation: none;
+    transform: translateY(-50%); /* Ya avanzado */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .num-scroll-inner {
+    animation: none !important;
+    transform: translateY(-50%) !important;
+  }
+}

@@ -1,0 +1,42 @@
+---
+import { type Dict, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  t: Dict;
+}
+
+const { lang, t } = Astro.props;
+
+// Intentamos leer cf desde la Request, disponible en Cloudflare Workers
+const cf = Astro.request.cf as any;
+const colo = cf?.colo || "MAD";
+const city = cf?.city || "Madrid";
+
+const timeOpts: Intl.DateTimeFormatOptions = {
+  timeZone: cf?.timezone || "Europe/Madrid",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false
+};
+const localTime = new Intl.DateTimeFormat(lang === "es" ? "es-ES" : "en-GB", timeOpts).format(new Date());
+
+const labels = lang === "es"
+  ? { colo: "Colo", location: "Loc", time: "Hora" }
+  : { colo: "Colo", location: "Loc", time: "Time" };
+---
+<div class="mt-4 border border-line p-5 sm:p-6 bg-paper" id="edge-status">
+  <p class="kicker mb-4 flex justify-between"><span>Edge Status</span> <span class="text-ultra">●</span></p>
+  <ul class="space-y-2 font-mono text-[0.8rem] text-ink-soft">
+    <li class="flex justify-between">
+      <span class="text-grey">{labels.colo}</span> <span>{colo}</span>
+    </li>
+    <li class="flex justify-between">
+      <span class="text-grey">{labels.location}</span> <span>{city}</span>
+    </li>
+    <li class="flex justify-between border-t border-line pt-2 mt-2">
+      <span class="text-grey">{labels.time}</span> <span class="text-ultra tabular-nums">{localTime}</span>
+    </li>
+  </ul>
+</div>
