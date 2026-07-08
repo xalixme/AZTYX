@@ -76,12 +76,14 @@ const direct = [
           <label>No rellenar<input name="company" type="text" tabindex="-1" autocomplete="off" /></label>
         </div>
 
-        <!-- Widget Turnstile (único script externo, justificado por seguridad).
+        <!-- Turnstile DIFERIDO: cero peticiones (y cero cookies) de terceros hasta que
+             el usuario toca el formulario. Quien solo lee la página no recibe nada de
+             challenges.cloudflare.com. Render explícito desde el script de abajo.
              Solo en producción: en dev el servidor no exige token sin secreto. -->
         {
           import.meta.env.PROD && (
             <div class="sm:col-span-2">
-              <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} data-theme="auto" />
+              <div id="ts-slot" class="min-h-[65px]" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} />
             </div>
           )
         }
@@ -99,11 +101,38 @@ const direct = [
   </div>
 </section>
 
-<!-- Cloudflare Turnstile (carga diferida, solo en producción) -->
-{import.meta.env.PROD && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />}
-
 <script id="contact-config" type="application/json" data-msg={JSON.stringify({ sending: c.form.sending, success: c.form.success, error: c.form.error, invalid: c.form.invalid, send: c.form.send })}></script>
 <script>
+  // ——— Turnstile diferido ———
+  // El script de challenges.cloudflare.com (y sus cookies de seguridad) NO se
+  // carga hasta que el usuario interactúa con el formulario. Lighthouse y los
+  // visitantes que solo leen: cero terceros.
+  const IS_PROD = import.meta.env.PROD;
+  let tsRequested = false;
+
+  function renderTsWidget() {
+    const slot = document.getElementById("ts-slot");
+    const ts = (window as any).turnstile;
+    if (!slot || !ts || slot.dataset.rendered === "1") return;
+    slot.dataset.rendered = "1";
+    ts.render(slot, { sitekey: slot.dataset.sitekey || "", theme: "auto" });
+  }
+
+  function loadTurnstile() {
+    if (!IS_PROD || !document.getElementById("ts-slot")) return;
+    if ((window as any).turnstile) {
+      renderTsWidget(); // el script ya estaba (navegación previa): solo re-render
+      return;
+    }
+    if (tsRequested) return;
+    tsRequested = true;
+    (window as any).__aztyxTs = renderTsWidget;
+    const s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__aztyxTs&render=explicit";
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   function setupContactForm() {
     const configEl = document.getElementById("contact-config");
     if (!configEl) return;
@@ -111,6 +140,9 @@ const direct = [
     const form = document.getElementById("contact-form");
     if (!form || form.dataset.bound === "1") return;
     form.dataset.bound = "1";
+
+    // Primer contacto con el formulario → cargar/renderizar la verificación.
+    form.addEventListener("focusin", loadTurnstile, { once: true });
 
     const statusEl = document.getElementById("cf-status");
     const btn = document.getElementById("cf-submit");
@@ -122,6 +154,8 @@ const direct = [
       statusEl.style.color = ok ? "var(--ultra)" : "#ff6b6b";
     };
 
+    const getToken = () => (form.querySelector('[name="cf-turnstile-response"]') || {}).value || "";
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
@@ -132,12 +166,21 @@ const direct = [
         return;
       }
 
-      const token = (form.querySelector('[name="cf-turnstile-response"]') || {}).value || "";
-      data["cf-turnstile-response"] = token;
-
       btn.disabled = true;
       if (labelEl) labelEl.textContent = msg.sending;
       setStatus("", true);
+
+      // Si el widget aún no ha resuelto (p. ej. envío muy rápido), esperar el token.
+      let token = getToken();
+      if (IS_PROD && !token) {
+        loadTurnstile();
+        const t0 = Date.now();
+        while (!token && Date.now() - t0 < 8000) {
+          await new Promise((r) => setTimeout(r, 250));
+          token = getToken();
+        }
+      }
+      data["cf-turnstile-response"] = token;
 
       try {
         const res = await fetch("/api/contact", {
@@ -147,7 +190,7 @@ const direct = [
         });
         if (res.ok) {
           form.reset();
-          if (window.turnstile) window.turnstile.reset();
+          if ((window as any).turnstile) (window as any).turnstile.reset();
           setStatus(msg.success, true);
         } else {
           setStatus(msg.error, false);
@@ -161,4 +204,5 @@ const direct = [
     });
   }
   document.addEventListener("astro:page-load", setupContactForm);
+  setupContactForm();
 </script>
