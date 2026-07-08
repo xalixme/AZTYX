@@ -18,6 +18,14 @@
    (`xalixme/AZTYX`) a **Workers Builds** para CI/CD por push.
 4. `site` en `astro.config.mjs` → dominio real (afecta a canonical/hreflang/OG).
 
+### Nota CSP (estado tras la integración de Jules, 08/07/2026)
+Cabeceras de seguridad activas vía `public/_headers` (estáticos) + `src/middleware.ts` (/api).
+La CSP lleva `script-src 'unsafe-inline'` a propósito: Astro inlinea módulos pequeños y el
+bootstrap de las Server Islands es inline por diseño, y la CSP nativa de Astro (estable en v6+,
+con hashes automáticos) **aún no soporta `<ClientRouter/>`** — nuestras View Transitions ES/EN.
+Superficie XSS real ≈ 0 (no se refleja input de usuario en HTML). **Endurecimiento futuro**:
+cuando Astro soporte ClientRouter + CSP, activar `security.csp` y quitar `'unsafe-inline'`.
+
 ## Fase 1 — Formulario de contacto production-ready
 
 *(la lógica ya existe en `src/pages/api/contact.ts`; esto es configuración + endurecimiento)*

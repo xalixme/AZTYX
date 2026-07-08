@@ -53,6 +53,8 @@ const altEn = new URL(altLangPath(url.pathname, "en"), Astro.site ?? url.origin)
   </head>
 
   <body>
+    <!-- Progreso de lectura (scroll-driven, CSS puro; oculto sin soporte o con reduce-motion) -->
+    <div class="scroll-progress" aria-hidden="true"></div>
     <slot />
 
     <script>

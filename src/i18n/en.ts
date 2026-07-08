@@ -27,7 +27,7 @@ export const en = {
   hero: {
     kicker: "Digital product studio · Web + Admin + Booking + AI",
     title: ["Your business deserves", "more than a website:", "a system."],
-    lead: "I build complete platforms — public site, self-managed admin, bookings and analytics without tracking cookies — on Cloudflare's edge. Genuinely fast, secure by default, with running costs from €0.",
+    lead: "Every second of load time and every monthly fee costs you customers. I build complete platforms — site, self-managed admin, bookings and analytics without tracking cookies — on Cloudflare's edge: yours for good, genuinely fast, with running costs from €0.",
     ctaPrimary: "Try the live demo",
     ctaSecondary: "Let's talk about your project",
     chipsLabel: "Pick your sector and try it",
@@ -49,12 +49,12 @@ export const en = {
   showroom: {
     num: "01",
     title: "Try it: your sector, live",
-    lead: "This is not a mockup: it's an interactive demo of the modules I build — bookings, multilingual with RTL, analytics without tracking cookies. Switch sector, switch language, book.",
+    lead: "This is not a mockup: these are the modules I build, working — bookings, multilingual with RTL, analytics without tracking cookies. Switch sector, switch language, book. What you touch here is what I install in your business: try it before we ever talk money.",
     modulesLabel: "Active modules",
     signalsLabel: "Signals captured",
     signalsNote: "first-party analytics · 0 tracking cookies",
     perfLabel: "This very page · HTML from the edge in",
-    hint: "Every click you make in there is a measurable signal — that's how my analytics works.",
+    hint: "Every click in there is a measurable signal — the same cookieless analytics that will tell you what works in your business.",
     sectors: [
       { id: "restaurante", label: "Restaurant" },
       { id: "clinica", label: "Clinic" },
@@ -223,7 +223,7 @@ export const en = {
     kicker: "Case study · Live in production",
     title: "Taberna La Manuela",
     place: "Córdoba, next to the Mosque-Cathedral",
-    lead: "Digital menu platform + admin panel for a restaurant. Built on Astro 5 + Cloudflare (D1, R2, Pages). Proof of end-to-end capability: a real product — secure, international and fast.",
+    lead: "Digital menu platform + admin panel on Astro + Cloudflare (D1, R2). Not a promise: it's live in production, serving real customers every day — secure, international and fast.",
     metricsTitle: "Capabilities",
     metrics: [
       { k: "9", v: "languages with automatic translation and RTL (Arabic)" },
@@ -251,12 +251,12 @@ export const en = {
   services: {
     num: "04",
     title: "How I can help",
-    lead: "I don't build sites for one sector: I build the operating system of a local business. Reusable modules I assemble per case, at near-zero running cost.",
+    lead: "I don't build websites: I build your business's operating system — bookings that come in on their own, customers who understand you in their language, data that tells you what works. No platform fees: your budget goes into building, not renting.",
     items: [
-      { k: "Custom platform", v: "Public site + self-managed admin on Astro + Cloudflare (D1, R2). Multilingual, fast and secure, for any sector." },
-      { k: "Booking & appointments", v: "Native booking engine: agenda, no-show reminders, waitlist and deposits. Tables, appointments, rooms, hotel rooms or courts." },
-      { k: "Privacy + Martech", v: "First-party cookieless analytics + Cloudflare Zaraz: pixels, GA4 and Conversions API from the edge. Marketing that measures without slowing down or intruding." },
-      { k: "AI acceleration", v: "I bring agentic workflows (Claude) into your team to multiply speed without losing technical control." },
+      { k: "Custom platform", v: "Public site + an admin you manage yourself, without depending on anyone for every change. Multilingual, fast, secure — and yours, no platform fees." },
+      { k: "Booking & appointments", v: "Agenda, no-show reminders, waitlist and deposits. Fewer empty slots and fewer no-shows: tables, appointments, rooms, hotel rooms or courts." },
+      { k: "Privacy + Martech", v: "First-party analytics without tracking cookies + Cloudflare Zaraz: measure campaigns and conversions from the edge — no scare-away banners, no scripts slowing your site." },
+      { k: "AI acceleration", v: "Agentic workflows (Claude) with human judgment: a team's speed with one person's agility, without losing technical control." },
     ],
     sectorsLabel: "Sectors",
     sectors: [
@@ -275,7 +275,7 @@ export const en = {
   contact: {
     num: "05",
     title: "Let's work together",
-    lead: "Tell me about the project. I reply to every message.",
+    lead: "Tell me about your project and I'll show you what your business would gain — no strings attached. I reply to every message.",
     form: {
       name: "Name",
       namePh: "Your name",

@@ -4,6 +4,7 @@
 // funcionando (reservas, multi-idioma con RTL, analítica sin cookies).
 // Vanilla JS + View Transitions API cuando existe. Cero dependencias.
 import SectionHead from "./SectionHead.astro";
+import EdgeStatus from "./EdgeStatus.astro";
 import { type Dict, type Lang } from "../i18n";
 
 interface Props {
@@ -37,9 +38,14 @@ const s = t.showroom;
     <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
       <!-- Marco de "navegador" con la demo -->
       <div class="lg:col-span-8" data-reveal>
-        <div class="relative overflow-hidden border border-line bg-paper">
+        <div class="relative overflow-hidden rounded-[2px] border border-line-strong bg-paper shadow-sm">
+          <!-- Marcas de registro en las esquinas -->
+          <span class="absolute -left-px -top-px h-3 w-3 border-l-2 border-t-2 border-ink" aria-hidden="true" style="z-index: 10;"></span>
+          <span class="absolute -right-px -top-px h-3 w-3 border-r-2 border-t-2 border-ink" aria-hidden="true" style="z-index: 10;"></span>
+          <span class="absolute -bottom-px -left-px h-3 w-3 border-b-2 border-l-2 border-ink" aria-hidden="true" style="z-index: 10;"></span>
+          <span class="absolute -bottom-px -right-px h-3 w-3 border-b-2 border-r-2 border-ink" aria-hidden="true" style="z-index: 10;"></span>
           <!-- Chrome de ventana -->
-          <div class="flex items-center gap-3 border-b border-line px-4 py-2.5">
+          <div class="flex items-center gap-3 border-b border-line bg-paper-2 px-3 py-2">
             <span class="flex gap-1.5" aria-hidden="true">
               <span class="h-2.5 w-2.5 rounded-full border border-line-strong"></span>
               <span class="h-2.5 w-2.5 rounded-full border border-line-strong"></span>
@@ -53,7 +59,7 @@ const s = t.showroom;
           </div>
 
           <!-- Cuerpo de la demo (lo pinta el script) -->
-          <div id="sr-body" class="min-h-[24rem] p-5 sm:p-7" aria-live="polite"></div>
+          <div id="sr-body" class="min-h-[24rem] p-5 sm:p-7" aria-live="polite" style="view-transition-name: sr-body;"></div>
 
           <!-- Toast de confirmación -->
           <div
@@ -88,13 +94,26 @@ const s = t.showroom;
           </p>
         </div>
 
+        <!-- Server Island de Edge Status -->
+        <EdgeStatus server:defer lang={lang}>
+          <div slot="fallback" class="mt-4 border border-line p-5 sm:p-6 bg-paper animate-pulse h-[142px]">
+            <p class="kicker mb-4 flex justify-between"><span>Edge Status</span> <span class="text-grey">○</span></p>
+            <div class="space-y-3">
+              <div class="h-3 w-full bg-line rounded-sm"></div>
+              <div class="h-3 w-3/4 bg-line rounded-sm"></div>
+              <div class="h-3 w-5/6 bg-line rounded-sm mt-3 pt-3"></div>
+            </div>
+          </div>
+        </EdgeStatus>
+
         <p class="mt-4 font-mono text-[0.72rem] leading-relaxed text-grey">↳ {s.hint}</p>
       </aside>
     </div>
   </div>
 </section>
 
-<script is:inline define:vars={{ pageLang: lang }}>
+<script id="sr-config" type="application/json" data-lang={lang}></script>
+<script>
   (() => {
     // ——— Textos de la interfaz de la demo (su propio mini-i18n, incluye RTL) ———
     const UI = {
@@ -187,15 +206,20 @@ const s = t.showroom;
       },
     };
 
+    
+    let state = { sector: "restaurante", lang: "es", slot: null, signals: 0 };
+    let pageLang = "es";
     const RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const state = { sector: "restaurante", lang: pageLang === "en" ? "en" : "es", slot: null, signals: 0 };
+    const saveState = () => sessionStorage.setItem("aztyx-sr-state", JSON.stringify(state));
 
     const $ = (id) => document.getElementById(id);
+
 
     // ——— Analítica de la demo: cada interacción es una "señal" ———
     function signal() {
       state.signals++;
+      saveState();
       const count = $("sr-count");
       const bars = $("sr-bars");
       if (!count || !bars) return;
@@ -292,7 +316,9 @@ const s = t.showroom;
       const sectorEl = e.target.closest("[data-sector]");
       if (sectorEl) {
         state.sector = sectorEl.dataset.sector;
+        saveState();
         state.slot = null;
+        saveState();
         document.querySelectorAll(".sr-tab").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sector === state.sector)));
         update();
         signal();
@@ -301,6 +327,7 @@ const s = t.showroom;
       const langEl = e.target.closest("[data-srlang]");
       if (langEl) {
         state.lang = langEl.dataset.srlang;
+        saveState();
         update();
         signal();
         return;
@@ -308,6 +335,7 @@ const s = t.showroom;
       const slotEl = e.target.closest("[data-slot]");
       if (slotEl) {
         state.slot = slotEl.dataset.slot;
+        saveState();
         update();
         signal();
         return;
@@ -316,6 +344,7 @@ const s = t.showroom;
       if (confirmEl && state.slot) {
         showToast(UI[state.lang].done);
         state.slot = null;
+        saveState();
         update();
         signal();
       }
@@ -341,18 +370,63 @@ const s = t.showroom;
       if (el && nav) el.textContent = String(Math.max(1, Math.round(nav.responseStart)));
     }
 
+
+    // El listener vive en `document`, que PERSISTE entre navegaciones del ClientRouter:
+    // se registra una sola vez a nivel de módulo o las señales contarían duplicadas.
+    let clickBound = false;
+
     function init() {
+      const config = document.getElementById("sr-config");
+      pageLang = config ? config.dataset.lang : "es";
+
+      const savedState = sessionStorage.getItem("aztyx-sr-state");
+      if (savedState) {
+        try {
+          const parsed = JSON.parse(savedState);
+          state = { ...state, ...parsed };
+          if (state.lastPageLang !== pageLang) {
+            state.lang = pageLang === "en" ? "en" : "es";
+          }
+        } catch (e) {}
+      } else {
+        state.lang = pageLang === "en" ? "en" : "es";
+      }
+      state.lastPageLang = pageLang;
+      state.slot = null; // una hora a medio elegir no sobrevive a la navegación
+      saveState();
+
       const body = $("sr-body");
       if (!body || body.dataset.bound === "1") return;
       body.dataset.bound = "1";
-      document.addEventListener("click", (e) => {
-        onClick(e);
-        // El raíl de módulos depende del sector: refrescar tras cada interacción.
-        if (e.target.closest("[data-sector]")) renderModules();
-      });
+
+      if (!clickBound) {
+        clickBound = true;
+        document.addEventListener("click", (e) => {
+          onClick(e);
+          // El raíl de módulos depende del sector: refrescar tras cada interacción.
+          if (e.target.closest("[data-sector]")) renderModules();
+        });
+      }
+
       render();
       renderModules();
       renderPerf();
+      // Sincronizar las pestañas con el sector restaurado de sessionStorage.
+      document
+        .querySelectorAll(".sr-tab")
+        .forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sector === state.sector)));
+      // Pintar el contador restaurado (el DOM nuevo llega a 0 tras navegar).
+      const count = $("sr-count");
+      const bars = $("sr-bars");
+      if (count) count.textContent = String(state.signals);
+      if (bars && !bars.children.length) {
+        for (let i = 1; i <= Math.min(state.signals, 18); i++) {
+          const bar = document.createElement("span");
+          bar.className = "w-1.5 bg-ultra";
+          bar.style.height = 22 + ((i * 17) % 68) + "%";
+          bars.appendChild(bar);
+        }
+      }
     }
 
     document.addEventListener("astro:page-load", init);

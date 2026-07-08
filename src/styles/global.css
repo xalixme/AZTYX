@@ -1,6 +1,8 @@
 /* Variables de diseño primero (deben preceder a todo salvo otros @import). */
 @import "./tokens.css";
 @import "tailwindcss";
+@import "./animations.css";
+@import "./wireframe.css";
 
 /* ============================================================
    THEME (Tailwind v4) — los colores se mapean "inline" a los

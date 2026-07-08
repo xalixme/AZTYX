@@ -29,7 +29,7 @@ export const es = {
     kicker: "Estudio de producto digital · Web + Panel + Reservas + IA",
     // Cada elemento es una línea del titular; la última se pinta en ultramar.
     title: ["Tu negocio merece", "más que una web:", "un sistema."],
-    lead: "Construyo plataformas completas — web pública, panel autogestionable, reservas y analítica sin cookies de seguimiento — sobre el edge de Cloudflare. Rápidas de verdad, seguras de fábrica y con coste de operación desde 0 €.",
+    lead: "Cada segundo de carga y cada cuota mensual te cuestan clientes. Yo construyo plataformas completas — web, panel autogestionable, reservas y analítica sin cookies de seguimiento — en el edge de Cloudflare: tuyas para siempre, rápidas de verdad y con coste de operación desde 0 €.",
     ctaPrimary: "Probar la demo en vivo",
     ctaSecondary: "Hablemos de tu proyecto",
     chipsLabel: "Elige tu sector y pruébalo",
@@ -51,12 +51,12 @@ export const es = {
   showroom: {
     num: "01",
     title: "Pruébalo: tu sector, en vivo",
-    lead: "No es una maqueta: es una demostración interactiva de los módulos que construyo — reservas, multi-idioma con RTL, analítica sin cookies de seguimiento. Cambia de sector, cambia de idioma, reserva.",
+    lead: "No es una maqueta: son los módulos que construyo, funcionando — reservas, multi-idioma con RTL, analítica sin cookies de seguimiento. Cambia de sector, cambia de idioma, reserva. Lo que tocas aquí es lo que instalo en tu negocio: pruébalo antes de que hablemos de dinero.",
     modulesLabel: "Módulos activos",
     signalsLabel: "Señales captadas",
     signalsNote: "analítica first-party · 0 cookies de seguimiento",
     perfLabel: "Esta misma página · HTML desde el edge en",
-    hint: "Cada clic que haces ahí dentro es una señal medible — así funciona mi analítica.",
+    hint: "Cada clic ahí dentro es una señal medible — la misma analítica, sin cookies, que te dirá qué funciona en tu negocio.",
     sectors: [
       { id: "restaurante", label: "Restaurante" },
       { id: "clinica", label: "Clínica" },
@@ -225,7 +225,7 @@ export const es = {
     kicker: "Caso de estudio · Producto en producción",
     title: "Taberna La Manuela",
     place: "Córdoba, junto a la Mezquita-Catedral",
-    lead: "Plataforma de carta digital + panel de administración para un restaurante. Sobre Astro 5 + Cloudflare (D1, R2, Pages). La prueba de capacidad end-to-end: producto real, seguro, internacional y rápido.",
+    lead: "Plataforma de carta digital + panel de administración sobre Astro + Cloudflare (D1, R2). No es una promesa: está en producción, sirviendo a clientes reales cada día — segura, internacional y rápida.",
     metricsTitle: "Capacidades",
     metrics: [
       { k: "9", v: "idiomas con traducción automática y RTL (árabe)" },
@@ -253,12 +253,12 @@ export const es = {
   services: {
     num: "04",
     title: "En qué puedo ayudarte",
-    lead: "No hago webs de un sector: construyo el sistema operativo de un negocio local. Módulos reutilizables que ensamblo según el caso, a coste de operación casi cero.",
+    lead: "No hago webs: construyo el sistema operativo de tu negocio — reservas que entran solas, clientes que te entienden en su idioma, datos que dicen qué funciona. Sin cuotas de plataforma: tu presupuesto va a construir, no a alquilar.",
     items: [
-      { k: "Plataforma a medida", v: "Web pública + panel autogestionable sobre Astro + Cloudflare (D1, R2). Multilingüe, rápida y segura, para cualquier sector." },
-      { k: "Reservas y cita previa", v: "Motor de reservas nativo: agenda, recordatorios anti no-show, lista de espera y señal/depósito. Mesas, citas, salas, habitaciones o pistas." },
-      { k: "Privacidad + Martech", v: "Analítica first-party sin cookies + Cloudflare Zaraz: píxeles, GA4 y Conversions API desde el edge. Marketing que mide sin ralentizar ni invadir." },
-      { k: "Aceleración con IA", v: "Integro flujos agentic (Claude) en tu equipo para multiplicar la velocidad sin perder el control técnico." },
+      { k: "Plataforma a medida", v: "Web pública + panel que gestionas tú, sin depender de nadie para cada cambio. Multilingüe, rápida, segura — y tuya, sin cuotas de plataforma." },
+      { k: "Reservas y cita previa", v: "Agenda, recordatorios anti no-show, lista de espera y señal/depósito. Menos huecos vacíos y menos plantones: mesas, citas, salas, habitaciones o pistas." },
+      { k: "Privacidad + Martech", v: "Analítica first-party sin cookies de seguimiento + Cloudflare Zaraz: mide campañas y conversiones desde el edge, sin banners que espantan ni scripts que frenan tu web." },
+      { k: "Aceleración con IA", v: "Flujos agentic (Claude) con criterio humano: la velocidad de un equipo con la agilidad de uno, sin perder el control técnico." },
     ],
     sectorsLabel: "Sectores",
     sectors: [
@@ -277,7 +277,7 @@ export const es = {
   contact: {
     num: "05",
     title: "Trabajemos juntos",
-    lead: "Cuéntame el proyecto. Respondo a todos los mensajes.",
+    lead: "Cuéntame tu proyecto y te enseño qué ganaría tu negocio — sin compromiso. Respondo a todos los mensajes.",
     form: {
       name: "Nombre",
       namePh: "Cómo te llamas",
