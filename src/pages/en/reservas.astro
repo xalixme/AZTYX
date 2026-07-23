@@ -1,0 +1,62 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Mark from "../../components/Mark.astro";
+import Footer from "../../components/Footer.astro";
+import CosteReservas from "../../components/CosteReservas.astro";
+import { getDict, altLangPath } from "../../i18n";
+
+export const prerender = true;
+
+const lang = "en";
+const t = getDict(lang);
+const path = Astro.url.pathname;
+const title = "Restaurant booking system: the real cost | AZTYX";
+const description =
+  "3-year cost comparison: CoverManager and TheFork vs a native booking system (Cloudflare Workers + D1). No fees, no commissions, your own panel.";
+
+const canonical = new URL(path, Astro.site).toString();
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "The real cost of a restaurant booking system",
+  description,
+  inLanguage: "en",
+  datePublished: "2026-07-09",
+  dateModified: "2026-07-09",
+  author: { "@type": "Organization", name: "AZTYX", url: new URL("/en/", Astro.site).toString() },
+  publisher: { "@type": "Organization", name: "AZTYX" },
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+  about: ["restaurant booking system", "CoverManager", "TheFork", "Cloudflare Workers"],
+};
+---
+
+<Layout lang={lang} title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+  </Fragment>
+
+  <span id="top" aria-hidden="true"></span>
+
+  <header class="border-b border-line bg-paper/85 backdrop-blur-md">
+    <div class="shell flex items-center justify-between gap-4" style="min-height: var(--header-h)">
+      <a href="/en/" class="group flex items-center gap-2.5" aria-label="AZTYX">
+        <Mark size={24} class="text-ink transition-transform duration-500 ease-swiss group-hover:-translate-y-0.5" />
+        <span class="text-[1.05rem] font-extrabold tracking-tight text-ink">AZTYX</span>
+      </a>
+      <div class="flex items-center gap-5 font-mono text-sm">
+        <a href="/en/" class="text-grey transition-colors hover:text-ink">← Home</a>
+        <div class="flex items-center" aria-label="Language">
+          <a href={altLangPath(path, "es")} class="px-1 text-grey hover:text-ink">ES</a>
+          <span class="text-line" aria-hidden="true">/</span>
+          <a href={altLangPath(path, "en")} aria-current="true" class="px-1 font-semibold text-ink">EN</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <CosteReservas lang={lang} />
+  </main>
+
+  <Footer lang={lang} t={t} />
+</Layout>

@@ -9,7 +9,9 @@ import tailwindcss from "@tailwindcss/vite";
 // - output "server" + prerender en páginas de contenido → Lighthouse alto, /api dinámico.
 // - i18n por ruta: ES por defecto (sin prefijo) y EN bajo /en/.
 export default defineConfig({
-  site: "https://aztyx.dev", // {{SITE}} — sustituir por el dominio real
+  // Dominio en vivo actual. Cuando registres aztyx.dev y lo pongas como dominio
+  // personalizado del Worker, cambia esto (y public/sitemap.xml + robots.txt).
+  site: "https://aztyx.xalix.workers.dev",
   output: "server",
   adapter: cloudflare({
     platformProxy: { enabled: true }, // emula bindings (KV, vars) en local

@@ -6,6 +6,7 @@ interface Props {
 }
 const { t } = Astro.props;
 const sv = t.services;
+const es = t.meta.lang === "es";
 ---
 
 <section id="services" class="scroll-mt-24 py-20 sm:py-28">
@@ -43,5 +44,14 @@ const sv = t.services;
         }
       </ul>
     </div>
+
+    <!-- Enlace a la landing de comparativa de costes (reservas restaurantes) -->
+    <p class="mt-10" data-reveal>
+      <a href={es ? "/reservas" : "/en/reservas"} class="link-ul font-mono text-sm text-ink">
+        {es
+          ? "→ Restaurante: cuánto cuesta de verdad un sistema de reservas"
+          : "→ Restaurant: what a booking system really costs"}
+      </a>
+    </p>
   </div>
 </section>

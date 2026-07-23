@@ -43,11 +43,18 @@ const altEn = new URL(altLangPath(url.pathname, "en"), Astro.site ?? url.origin)
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AZTYX" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={lang === "es" ? "es_ES" : "en_US"} />
+    <meta property="og:locale:alternate" content={lang === "es" ? "en_US" : "es_ES"} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Datos estructurados u otras etiquetas específicas de página -->
+    <slot name="head" />
 
     <ClientRouter />
   </head>

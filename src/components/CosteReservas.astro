@@ -1,0 +1,434 @@
+---
+// Comparador de costes de sistemas de reserva para restaurantes.
+// Datos = estimaciones orientativas aportadas por el cliente; NO precios oficiales.
+// Gráfico de coste acumulado renderizado en servidor (SVG, sin JS de cliente).
+import { type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const es = lang === "es";
+
+// ————————————————————————————————————————————————————————————
+// Modelo del gráfico (escenario medio de cada rango, ~300 comensales/mes)
+// ————————————————————————————————————————————————————————————
+const M = 36; // meses
+const YMAX = 18000; // € eje Y
+const X0 = 66,
+  X1 = 628,
+  Y0 = 24,
+  Y1 = 320;
+const px = (m: number) => +(X0 + (m / M) * (X1 - X0)).toFixed(1);
+const py = (v: number) => +(Y1 - (Math.min(v, YMAX) / YMAX) * (Y1 - Y0)).toFixed(1);
+
+const AZ0 = 700,
+  AZ_M = 40 / 12, // mantenimiento prorrateado
+  CM_M = 100, // CoverManager (medio de 50–150)
+  TF_M = 450; // TheFork (300 comensales × 1,5 €)
+
+const azLine = `${px(0)},${py(AZ0)} ${px(M)},${py(AZ0 + AZ_M * M)}`;
+const cmLine = `${px(0)},${py(0)} ${px(M)},${py(CM_M * M)}`;
+const tfLine = `${px(0)},${py(0)} ${px(M)},${py(TF_M * M)}`;
+
+// Cruce: mes en que el gasto acumulado del tercero supera el pago único de AZTYX.
+const beCm = Math.round(AZ0 / (CM_M - AZ_M)); // ≈ 7
+const beTf = Math.round(AZ0 / (TF_M - AZ_M)); // ≈ 2
+const beCmX = px(AZ0 / (CM_M - AZ_M));
+const beTfX = px(AZ0 / (TF_M - AZ_M));
+const azY = py(AZ0 + AZ_M * (AZ0 / (CM_M - AZ_M)));
+
+const yTicks = [0, 6000, 12000, 18000];
+const xTicks = [0, 12, 24, 36];
+
+// ————————————————————————————————————————————————————————————
+// Contenido
+// ————————————————————————————————————————————————————————————
+const C = es
+  ? {
+      kicker: "Comparativa de costes · Sistemas de reserva",
+      title: "Cuánto cuesta de verdad<br>un sistema de reservas",
+      lead: "Los números, sin marketing. Compara el coste a tres años de las plataformas de terceros frente a un sistema de reservas nativo: panel propio, sin cuotas mensuales y sin comisión por comensal.",
+      tableTitle: "Coste estimado por sistema",
+      cols: ["Sistema", "Modelo de coste", "Mensual (est.)", "Anual (est.)", "A 3 años (est.)"],
+      rows: [
+        {
+          name: "CoverManager",
+          model: "Cuota mensual fija",
+          m: "50 – 150 €",
+          y: "600 – 1.800 €",
+          y3: "1.800 – 5.400 €",
+          own: false,
+        },
+        {
+          name: "TheFork Manager",
+          model: "Comisión por comensal + cuota base",
+          m: "≈ 300 – 600 €¹",
+          y: "3.600 – 7.200 €",
+          y3: "10.800 – 21.600 €",
+          own: false,
+        },
+        {
+          name: "AZTYX · reservas nativas",
+          model: "Pago único + mantenimiento",
+          m: "0 € de cuota",
+          y: "40 € + 700 € único²",
+          y3: "820 €",
+          own: true,
+        },
+      ],
+      fn1: "¹ A ~300 comensales/mes gestionados por la plataforma; la comisión escala con el volumen.",
+      fn2: "² El pago único incluye la plataforma completa (web + panel + reservas). Las plataformas de terceros cubren solo la reserva; la web se contrata aparte.",
+      chartTitle: "Coste acumulado a 36 meses",
+      chartNote:
+        "Escenario orientativo con el valor medio de cada rango (restaurante de ~300 comensales/mes). Tu tramo real depende del contrato, el volumen y las funcionalidades.",
+      legend: [
+        { k: "AZTYX (nativo)", v: "820 € en 3 años" },
+        { k: "CoverManager", v: "≈ 3.600 € (medio)" },
+        { k: "TheFork", v: "≈ 16.200 € (medio)" },
+      ],
+      beCm: `CoverManager supera el pago único de AZTYX hacia el mes ${beCm}`,
+      beTf: `TheFork lo supera hacia el mes ${beTf}`,
+      axisY: ["0 €", "6.000 €", "12.000 €", "18.000 €"],
+      axisXsuffix: "meses",
+      savingsTitle: "Ahorro acumulado a 3 años",
+      savingsNote: "Frente al escenario medio; el rango refleja los límites de cada estimación.",
+      savings: [
+        { vs: "vs CoverManager", range: "980 € – 4.580 €", mid: "≈ 2.780 € menos" },
+        { vs: "vs TheFork", range: "9.980 € – 20.780 €", mid: "≈ 15.380 € menos" },
+      ],
+      upTitle: "¿Necesitas SMS o WhatsApp? Módulo opcional",
+      upBody:
+        "La confirmación por email va incluida y cubre incluso restaurantes de alto volumen (Resend, gratis hasta 3.000 correos/mes). Si además quieres recordatorios por SMS o WhatsApp, se activa solo bajo demanda:",
+      upItems: [
+        "SMS ≈ 0,06 – 0,07 € por mensaje (coste real de Twilio).",
+        "WhatsApp ≈ 0,03 – 0,05 € por mensaje.",
+        "Ejemplo: 200 reservas/mes con SMS ≈ 14 €/mes de coste real.",
+      ],
+      upFoot: "Se factura como módulo aparte y, aun así, muy por debajo de una cuota mensual de plataforma.",
+      valueTitle: "Lo que no cambia",
+      values: [
+        { k: "Panel propio", v: "Gestionas mesas, horarios y reservas tú, sin depender de nadie." },
+        { k: "Sin cuotas", v: "Ni mensualidad ni permanencia. El coste no crece con tu éxito." },
+        { k: "Sin comisiones", v: "Cada comensal que reserva es 100 % tuyo, sin peaje por reserva." },
+        { k: "Sin dependencia", v: "Tus reservas y los datos de tus clientes son tuyos, no de un tercero." },
+      ],
+      disclaimer:
+        "Los importes de CoverManager y TheFork son estimaciones orientativas basadas en información pública y pueden variar según contrato, volumen, país y funcionalidades. No son precios oficiales: verifica siempre las cifras actuales con cada proveedor. Comparativa con fines informativos.",
+      ctaText: "Pídeme una comparativa con los números de tu restaurante",
+      ctaBtn: "Hablemos de tu proyecto",
+      back: "Inicio",
+    }
+  : {
+      kicker: "Cost comparison · Booking systems",
+      title: "What a booking system<br>really costs",
+      lead: "The numbers, no marketing. Compare the 3-year cost of third-party platforms against a native booking system: your own panel, no monthly fees, no per-guest commission.",
+      tableTitle: "Estimated cost per system",
+      cols: ["System", "Cost model", "Monthly (est.)", "Yearly (est.)", "Over 3 years (est.)"],
+      rows: [
+        {
+          name: "CoverManager",
+          model: "Fixed monthly fee",
+          m: "€50 – €150",
+          y: "€600 – €1,800",
+          y3: "€1,800 – €5,400",
+          own: false,
+        },
+        {
+          name: "TheFork Manager",
+          model: "Per-guest commission + base fee",
+          m: "≈ €300 – €600¹",
+          y: "€3,600 – €7,200",
+          y3: "€10,800 – €21,600",
+          own: false,
+        },
+        {
+          name: "AZTYX · native bookings",
+          model: "One-time payment + maintenance",
+          m: "€0 fee",
+          y: "€40 + €700 one-time²",
+          y3: "€820",
+          own: true,
+        },
+      ],
+      fn1: "¹ At ~300 guests/month handled by the platform; commission scales with volume.",
+      fn2: "² The one-time payment includes the full platform (site + admin + bookings). Third-party platforms cover only the booking; the website is contracted separately.",
+      chartTitle: "Accumulated cost over 36 months",
+      chartNote:
+        "Illustrative scenario using the mid-point of each range (restaurant with ~300 guests/month). Your actual bracket depends on contract, volume and features.",
+      legend: [
+        { k: "AZTYX (native)", v: "€820 over 3 years" },
+        { k: "CoverManager", v: "≈ €3,600 (mid)" },
+        { k: "TheFork", v: "≈ €16,200 (mid)" },
+      ],
+      beCm: `CoverManager passes AZTYX's one-time payment around month ${beCm}`,
+      beTf: `TheFork passes it around month ${beTf}`,
+      axisY: ["€0", "€6,000", "€12,000", "€18,000"],
+      axisXsuffix: "months",
+      savingsTitle: "Accumulated savings over 3 years",
+      savingsNote: "Against the mid scenario; the range reflects the bounds of each estimate.",
+      savings: [
+        { vs: "vs CoverManager", range: "€980 – €4,580", mid: "≈ €2,780 less" },
+        { vs: "vs TheFork", range: "€9,980 – €20,780", mid: "≈ €15,380 less" },
+      ],
+      upTitle: "Need SMS or WhatsApp? Optional module",
+      upBody:
+        "Email confirmation is included and covers even high-volume restaurants (Resend, free up to 3,000 emails/month). If you also want SMS or WhatsApp reminders, it's enabled on demand only:",
+      upItems: [
+        "SMS ≈ €0.06 – €0.07 per message (Twilio's real cost).",
+        "WhatsApp ≈ €0.03 – €0.05 per message.",
+        "Example: 200 bookings/month with SMS ≈ €14/month real cost.",
+      ],
+      upFoot: "Billed as a separate module and still far below a platform's monthly fee.",
+      valueTitle: "What never changes",
+      values: [
+        { k: "Your own panel", v: "You manage tables, hours and bookings yourself, depending on no one." },
+        { k: "No fees", v: "No subscription, no lock-in. Cost doesn't grow with your success." },
+        { k: "No commissions", v: "Every guest who books is 100% yours, no per-booking toll." },
+        { k: "No dependency", v: "Your bookings and customer data are yours, not a third party's." },
+      ],
+      disclaimer:
+        "CoverManager and TheFork figures are indicative estimates based on public information and may vary by contract, volume, country and features. They are not official prices: always verify current figures with each provider. Comparison for informational purposes.",
+      ctaText: "Ask me for a comparison using your restaurant's real numbers",
+      ctaBtn: "Let's talk about your project",
+      back: "Home",
+    };
+
+const contactHref = es ? "/#contact" : "/en/#contact";
+---
+
+<section class="py-16 sm:py-20">
+  <div class="shell">
+    <!-- Cabecera -->
+    <p class="kicker mb-6" data-reveal>{C.kicker}</p>
+    <h1
+      class="font-extrabold leading-[0.95] tracking-tightest text-ink"
+      style="font-size: clamp(2.2rem, 6.5vw, 5rem)"
+      data-reveal
+      set:html={C.title}
+    />
+    <p class="mt-7 max-w-2xl text-pretty text-lg leading-relaxed text-ink-soft" data-reveal style="--reveal-delay:120ms">
+      {C.lead}
+    </p>
+
+    <!-- Tabla comparativa -->
+    <div class="mt-16">
+      <hr class="rule mb-6 origin-left" data-rule />
+      <h2 class="kicker mb-5" data-reveal>{C.tableTitle}</h2>
+      <div class="overflow-x-auto" data-reveal>
+        <table class="w-full min-w-[46rem] border-collapse text-left">
+          <thead>
+            <tr class="border-b border-line-strong">
+              {
+                C.cols.map((col, i) => (
+                  <th
+                    class:list={[
+                      "py-3 align-bottom font-mono text-[0.7rem] uppercase tracking-wider text-grey",
+                      i === 0 ? "" : "text-right",
+                    ]}
+                  >
+                    {col}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {
+              C.rows.map((r) => (
+                <tr class:list={["border-b border-line", r.own ? "bg-paper-2/50" : ""]}>
+                  <th scope="row" class="py-4 pr-4 align-top">
+                    <span
+                      class:list={[
+                        "font-bold tracking-tight",
+                        r.own ? "text-ultra" : "text-ink",
+                      ]}
+                    >
+                      {r.own && <span aria-hidden="true">↗ </span>}
+                      {r.name}
+                    </span>
+                  </th>
+                  <td class="py-4 pl-4 text-right text-sm text-ink-soft">{r.model}</td>
+                  <td class:list={["py-4 pl-4 text-right font-mono text-sm", r.own ? "text-ultra" : "text-ink"]}>
+                    {r.m}
+                  </td>
+                  <td class:list={["py-4 pl-4 text-right font-mono text-sm", r.own ? "text-ultra" : "text-ink"]}>
+                    {r.y}
+                  </td>
+                  <td
+                    class:list={[
+                      "py-4 pl-4 text-right font-mono font-semibold",
+                      r.own ? "text-ultra" : "text-ink",
+                    ]}
+                  >
+                    {r.y3}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 max-w-3xl font-mono text-[0.72rem] leading-relaxed text-grey" data-reveal>{C.fn1}</p>
+      <p class="mt-1 max-w-3xl font-mono text-[0.72rem] leading-relaxed text-grey" data-reveal>{C.fn2}</p>
+    </div>
+
+    <!-- Gráfico de coste acumulado -->
+    <div class="mt-16">
+      <hr class="rule mb-6 origin-left" data-rule />
+      <h2 class="kicker mb-5" data-reveal>{C.chartTitle}</h2>
+
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+        <figure class="lg:col-span-8" data-reveal>
+          <svg
+            viewBox="0 0 660 360"
+            class="w-full"
+            role="img"
+            aria-label={C.chartTitle}
+            font-family="'IBM Plex Mono', ui-monospace, monospace"
+          >
+            <!-- Rejilla horizontal + etiquetas € -->
+            {
+              yTicks.map((v, i) => (
+                <g>
+                  <line x1={X0} y1={py(v)} x2={X1} y2={py(v)} stroke="#14130f" stroke-opacity="0.12" />
+                  <text x={X0 - 8} y={py(v) + 3} font-size="9" fill="#6b6a63" text-anchor="end">
+                    {C.axisY[i]}
+                  </text>
+                </g>
+              ))
+            }
+            <!-- Etiquetas eje X -->
+            {
+              xTicks.map((m) => (
+                <text x={px(m)} y={Y1 + 18} font-size="9" fill="#6b6a63" text-anchor="middle">
+                  {m}
+                </text>
+              ))
+            }
+            <text x={(X0 + X1) / 2} y="352" font-size="9" fill="#6b6a63" text-anchor="middle">
+              {C.axisXsuffix}
+            </text>
+
+            <!-- Líneas de coste (competidores en tinta con guiones, AZTYX en ultramar) -->
+            <polyline points={tfLine} fill="none" stroke="#14130f" stroke-opacity="0.78" stroke-width="2" stroke-dasharray="7 4" stroke-linecap="round" />
+            <polyline points={cmLine} fill="none" stroke="#14130f" stroke-opacity="0.42" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round" />
+            <polyline points={azLine} fill="none" stroke="#1a39ff" stroke-width="3.5" stroke-linecap="round" />
+
+            <!-- Puntos de cruce -->
+            <circle cx={beTfX} cy={azY} r="3.5" fill="#1a39ff" />
+            <circle cx={beCmX} cy={azY} r="3.5" fill="#1a39ff" />
+
+            <!-- Etiquetas de serie al final -->
+            <text x={X1 + 2} y={py(TF_M * M) + 3} font-size="9" fill="#14130f" fill-opacity="0.8" text-anchor="end">TheFork</text>
+            <text x={X1 + 2} y={py(CM_M * M) - 5} font-size="9" fill="#14130f" fill-opacity="0.6" text-anchor="end">CoverManager</text>
+            <text x={X1 - 2} y={py(AZ0) - 8} font-size="9.5" fill="#1a39ff" font-weight="600" text-anchor="end">AZTYX</text>
+          </svg>
+          <figcaption class="mt-4 max-w-2xl font-mono text-[0.72rem] leading-relaxed text-grey">{C.chartNote}</figcaption>
+        </figure>
+
+        <!-- Leyenda + cruces -->
+        <aside class="lg:col-span-4" data-reveal style="--reveal-delay:120ms">
+          <ul class="border border-line">
+            {
+              C.legend.map((l, i) => (
+                <li class:list={["flex items-center justify-between gap-3 p-4", i > 0 ? "border-t border-line" : ""]}>
+                  <span class="flex items-center gap-2.5">
+                    <span
+                      class:list={["inline-block h-[3px] w-6", i === 0 ? "bg-ultra" : "bg-ink"]}
+                      style={i === 1 ? "opacity:.42" : i === 2 ? "opacity:.78" : ""}
+                      aria-hidden="true"
+                    />
+                    <span class:list={["text-sm font-bold", i === 0 ? "text-ultra" : "text-ink"]}>{l.k}</span>
+                  </span>
+                  <span class="font-mono text-[0.72rem] text-grey">{l.v}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="mt-4 space-y-2 border-l-2 border-ultra pl-4">
+            <p class="font-mono text-[0.76rem] leading-relaxed text-ink-soft">{C.beTf}</p>
+            <p class="font-mono text-[0.76rem] leading-relaxed text-ink-soft">{C.beCm}</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Ahorro acumulado -->
+    <div class="mt-16">
+      <hr class="rule mb-6 origin-left" data-rule />
+      <h2 class="kicker mb-1" data-reveal>{C.savingsTitle}</h2>
+      <p class="mb-6 font-mono text-[0.72rem] text-grey" data-reveal>{C.savingsNote}</p>
+      <div class="grid grid-cols-1 gap-px overflow-hidden border border-line bg-line sm:grid-cols-2">
+        {
+          C.savings.map((sv, i) => (
+            <div class="bg-paper p-7 sm:p-9" data-reveal style={`--reveal-delay:${i * 100}ms`}>
+              <p class="font-mono text-[0.72rem] uppercase tracking-wider text-grey">{sv.vs}</p>
+              <p class="mt-3 font-mono font-semibold leading-none tracking-tight text-ultra" style="font-size: clamp(1.6rem, 4vw, 2.5rem)">
+                {sv.range}
+              </p>
+              <p class="mt-3 text-sm text-ink-soft">{sv.mid}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Módulo opcional SMS/WhatsApp -->
+    <div class="mt-16">
+      <hr class="rule mb-6 origin-left" data-rule />
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
+        <div class="md:col-span-5">
+          <h2 class="text-2xl font-bold tracking-tight text-ink" data-reveal>{C.upTitle}</h2>
+        </div>
+        <div class="md:col-span-7" data-reveal style="--reveal-delay:100ms">
+          <p class="text-[0.98rem] leading-relaxed text-ink-soft">{C.upBody}</p>
+          <ul class="mt-5 space-y-2.5">
+            {
+              C.upItems.map((it) => (
+                <li class="flex gap-3 text-[0.95rem] leading-relaxed text-ink">
+                  <span class="select-none font-mono text-ultra" aria-hidden="true">+</span>
+                  <span>{it}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-5 border-l-2 border-ultra pl-4 font-mono text-[0.82rem] leading-relaxed text-ink-soft">{C.upFoot}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Propuesta de valor -->
+    <div class="mt-16">
+      <hr class="rule mb-6 origin-left" data-rule />
+      <h2 class="kicker mb-6" data-reveal>{C.valueTitle}</h2>
+      <div class="grid grid-cols-1 gap-px overflow-hidden border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        {
+          C.values.map((v, i) => (
+            <div class="bg-paper p-6" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+              <p class="mb-2 text-lg font-bold tracking-tight text-ink">{v.k}</p>
+              <p class="text-sm leading-relaxed text-ink-soft">{v.v}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 border-t border-line-strong pt-10" data-reveal>
+      <p class="max-w-xl text-pretty text-xl font-medium leading-snug text-ink">{C.ctaText}</p>
+      <a
+        href={contactHref}
+        class="group mt-6 inline-flex items-center gap-3 bg-ink px-7 py-3.5 font-mono text-sm text-paper transition-colors duration-300 ease-swiss hover:bg-ultra"
+      >
+        {C.ctaBtn}
+        <span class="transition-transform duration-300 ease-swiss group-hover:translate-x-1" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <!-- Aviso legal / estimaciones -->
+    <p class="mt-14 max-w-3xl border-t border-line pt-6 font-mono text-[0.72rem] leading-relaxed text-grey">
+      ⚠ {C.disclaimer}
+    </p>
+  </div>
+</section>
