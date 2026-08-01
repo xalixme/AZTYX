@@ -1,0 +1,35 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { type Dict } from "../i18n";
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const d = t.descubrible;
+---
+
+<section id="descubrible" class="scroll-mt-24 py-20 sm:py-28">
+  <div class="shell">
+    <SectionHead num={d.num} title={d.title} lead={d.lead} />
+
+    <div class="mt-14 grid grid-cols-1 gap-px overflow-hidden border border-line bg-line md:grid-cols-2">
+      {
+        d.items.map((it, i) => (
+          <article class="group relative bg-paper p-7 sm:p-9" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <span class="absolute left-0 top-0 h-full w-[3px] origin-top scale-y-0 bg-ultra transition-transform duration-500 ease-swiss group-hover:scale-y-100" aria-hidden="true" />
+            <p class="mb-6 font-mono text-sm text-grey">{String(i + 1).padStart(2, "0")}</p>
+            <h3 class="mb-3 text-xl font-bold leading-tight tracking-tight text-ink transition-colors duration-300 group-hover:text-ultra">
+              {it.k}
+            </h3>
+            <p class="text-[0.95rem] leading-relaxed text-ink-soft">{it.v}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- El cierre honesto (guiño "dice la verdad") -->
+    <p class="mt-8 max-w-2xl border-l-2 border-ultra pl-4 font-mono text-[0.9rem] leading-relaxed text-ink-soft" data-reveal>
+      {d.note}
+    </p>
+  </div>
+</section>

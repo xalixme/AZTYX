@@ -14,6 +14,7 @@ export const es = {
     skills: "Skills",
     case: "Caso",
     services: "Servicios",
+    descubrible: "Visibilidad",
     contact: "Contacto",
     toContact: "Hablemos",
     skipToContent: "Saltar al contenido",
@@ -274,8 +275,21 @@ export const es = {
     ],
   },
 
-  contact: {
+  descubrible: {
     num: "05",
+    title: "Que te encuentren",
+    lead: "Construir la web es la mitad del trabajo. La otra mitad es que te encuentren — en Google y en los asistentes de IA — y saber dónde está el cuello de botella de verdad, aunque no sea la web.",
+    items: [
+      { k: "SEO técnico", v: "Canonical, sitemap con fecha real, un robots que invita a la IA en vez de bloquearla. Sin errores técnicos que te penalicen en Google." },
+      { k: "GEO · visibilidad en IA", v: "Que ChatGPT, Perplexity o Gemini conozcan y recomienden tu negocio: contenido que los agentes leen y reutilizan, no solo páginas para humanos." },
+      { k: "Ingeniería de entidad", v: "Que Google y la IA entiendan qué eres exactamente y que todos tus perfiles son uno solo — con la palabra que busca cada cliente, en su idioma." },
+      { k: "Auditoría de presencia", v: "Ficha de Google, reseñas, perfiles de terceros. Te digo con datos qué falla y qué NO debes hacer — aunque el problema no sea el código." },
+    ],
+    note: "Y si el cuello de botella no es la web, te lo digo — aunque sean menos horas facturadas para mí.",
+  },
+
+  contact: {
+    num: "06",
     title: "Trabajemos juntos",
     lead: "Cuéntame tu proyecto y te enseño qué ganaría tu negocio — sin compromiso. Respondo a todos los mensajes.",
     form: {

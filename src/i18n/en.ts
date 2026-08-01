@@ -13,6 +13,7 @@ export const en = {
     skills: "Skills",
     case: "Case",
     services: "Services",
+    descubrible: "Visibility",
     contact: "Contact",
     toContact: "Let's talk",
     skipToContent: "Skip to content",
@@ -272,8 +273,21 @@ export const en = {
     ],
   },
 
-  contact: {
+  descubrible: {
     num: "05",
+    title: "Get found",
+    lead: "Building the site is half the job. The other half is getting found — on Google and in AI assistants — and knowing where the real bottleneck is, even when it isn't the website.",
+    items: [
+      { k: "Technical SEO", v: "Canonical, sitemap with real dates, a robots file that invites AI instead of blocking it. No technical errors dragging you down on Google." },
+      { k: "GEO · AI visibility", v: "So ChatGPT, Perplexity or Gemini know and recommend your business: content agents actually read and reuse, not just pages for humans." },
+      { k: "Entity engineering", v: "So Google and AI understand exactly what you are and that all your profiles are one entity — with the word each customer searches, in their language." },
+      { k: "Presence audit", v: "Google listing, reviews, third-party profiles. I tell you with data what's failing and what NOT to do — even when the problem isn't the code." },
+    ],
+    note: "And if the bottleneck isn't the website, I'll tell you — even if it means fewer billable hours for me.",
+  },
+
+  contact: {
+    num: "06",
     title: "Let's work together",
     lead: "Tell me about your project and I'll show you what your business would gain — no strings attached. I reply to every message.",
     form: {
