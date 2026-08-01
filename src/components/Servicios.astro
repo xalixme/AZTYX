@@ -45,13 +45,20 @@ const es = t.meta.lang === "es";
       </ul>
     </div>
 
-    <!-- Enlace a la landing de comparativa de costes (reservas restaurantes) -->
-    <p class="mt-10" data-reveal>
-      <a href={es ? "/reservas" : "/en/reservas"} class="link-ul font-mono text-sm text-ink">
-        {es
-          ? "→ Restaurante: cuánto cuesta de verdad un sistema de reservas"
-          : "→ Restaurant: what a booking system really costs"}
+    <!-- Botón a la oferta completa para restaurantes + enlace a la comparativa -->
+    <div class="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4" data-reveal>
+      <a
+        href="/oferta.html"
+        target="_blank"
+        rel="noopener"
+        class="group inline-flex items-center gap-3 bg-ink px-6 py-3.5 font-mono text-sm text-paper transition-colors duration-300 ease-swiss hover:bg-ultra"
+      >
+        {es ? "Ver nuestra oferta para restaurantes" : "See our restaurant offer"}
+        <span class="transition-transform duration-300 ease-swiss group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true">↗</span>
       </a>
-    </p>
+      <a href={es ? "/reservas" : "/en/reservas"} class="link-ul font-mono text-sm text-ink">
+        {es ? "→ Comparativa de costes de reservas" : "→ Booking cost comparison"}
+      </a>
+    </div>
   </div>
 </section>
