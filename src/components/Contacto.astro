@@ -10,11 +10,7 @@ const c = t.contact;
 // producción definir PUBLIC_TURNSTILE_SITE_KEY en el entorno.
 import { PUBLIC_TURNSTILE_SITE_KEY } from "astro:env/client";
 
-const direct = [
-  { label: "Email", value: c.email, href: `mailto:${c.email}` },
-  { label: c.linkedinLabel, value: c.linkedin, href: c.linkedin },
-  { label: c.githubLabel, value: c.github, href: `https://${c.github}` },
-];
+const direct = [{ label: "Email", value: c.email, href: `mailto:${c.email}` }];
 ---
 
 <section id="contact" class="invert scroll-mt-24 py-20 sm:py-28">

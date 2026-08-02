@@ -306,7 +306,7 @@ export const es = {
       invalid: "Revisa los campos marcados.",
     },
     directTitle: "Directo",
-    email: "{{EMAIL}}",
+    email: "androwlife98@gmail.com",
     linkedinLabel: "LinkedIn",
     linkedin: "{{LINKEDIN}}",
     githubLabel: "GitHub",

@@ -304,7 +304,7 @@ export const en = {
       invalid: "Check the highlighted fields.",
     },
     directTitle: "Direct",
-    email: "{{EMAIL}}",
+    email: "androwlife98@gmail.com",
     linkedinLabel: "LinkedIn",
     linkedin: "{{LINKEDIN}}",
     githubLabel: "GitHub",
