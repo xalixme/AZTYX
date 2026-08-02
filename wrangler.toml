@@ -2,7 +2,7 @@
 # Proyecto Cloudflare Workers (el adaptador Astro 14 ya no usa Pages).
 # `main` apunta al entrypoint del adaptador; los assets los gestiona el adaptador.
 main = "@astrojs/cloudflare/entrypoints/server"
-name = "aztyx-portfolio"
+name = "aztyx"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
